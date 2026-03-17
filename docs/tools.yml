@@ -1,0 +1,31 @@
+tools:
+  - name: Github
+    task: Manage repository
+  - name: Git
+    task: Version control
+  - name: Markdown
+    task: Documentation
+  - name: Mermaid
+    task: Diagrams
+  - name: Docker
+    task: Containerization
+  - name: Nginx
+    task: Proxy server, load balancer
+  - name: Python
+    task: Programming language
+  - name: uv
+    task: Python package manager
+  - name: prek
+    task: Code formatter
+  - name: FastAPI
+    task: Web framework
+  - name: SQLAlchemy
+    task: Database toolkit
+  - name: PostgreSQL
+    task: Relational database
+  - name: PostGIS
+    task: Spatial database extender for PostgreSQL
+  - name: Redis
+    task: In-memory data structure store
+  - name: Minio
+    task: Object storage
