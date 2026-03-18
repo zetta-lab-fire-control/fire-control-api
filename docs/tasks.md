@@ -3,75 +3,56 @@
 ### Fase 1: Planejamento e Design
 
 - [x] Inicializar o repositório Git e definir a estrutura de pastas (arquitetura do código)
-
 - [x] Definir requisitos funcionais e não funcionais
-
 - [x] Desenhar a arquitetura geral e fluxo de dados
-
 - [x] Modelar o schema do banco de dados (Relacional + Geoespacial)
 
 
 ### Fase 2: Configuração do Projeto e Infraestrutura
 
-- [ ] Configurar o ambiente de desenvolvimento local (uv, docker, makefile)
-
-- [ ] Configurar ferramentas de qualidade de código (Linter, Formatter)
+- [x] Configurar o ambiente de desenvolvimento local (uv, docker, makefile)
+- [x] Configurar ferramentas de qualidade de código (Linter, Formatter)
 
 
 ### Fase 3: Desenvolvimento - Serviços Core
 
-- [ ] Documentar os contratos da API (Criar o Swagger/OpenAPI spec das rotas)
+- [ ] Configurar a conexão do ORM (ex: SQLAlchemy + GeoAlchemy2) com o PostgreSQL.
+- [ ] Criar os Modelos (Tabelas do banco) para Usuários, Ocorrências e Denúncias.
+- [ ] Criar os Schemas (Pydantic) para validação de entrada e saída de dados.
+- [ ] Configurar o Alembic e executar as migrations iniciais do schema.
+- [ ] Integrar o serviço de Cloud Storage (MinIO configurado) para upload de fotos.
+- [ ] Criar a query geoespacial (PostGIS ST_DWithin) para calcular o raio de 400m.
+- [ ] Criar as rotas de acordo com os casos de uso da api e as regras do negócio.
+- [ ] Documentar os contratos da API (Refinar o Swagger/OpenAPI gerado pelo FastAPI).
 
-- [ ] Configurar o ORM/Query Builder e executar as migrations iniciais do schema
 
-- [ ] Auth: Implementar registro e login gerando token JWT (com hash de senhas)
-
-- [ ] Auth: Criar middlewares de proteção de rotas e controle de papéis (USER, FIREFIGHTER, ADMIN)
-
-- [ ] Upload: Integrar o serviço de Cloud Storage (ex: AWS S3) para receber fotos e retornar a URL
-
-- [ ] Geoespacial: Escrever a query do PostGIS (ST_DWithin) para calcular o raio de 400m
-
-- [ ] Ocorrências: Criar o endpoint de Reportar Foco (POST) recebendo dados, validando o raio de 400m e vinculando/criando a ocorrência
-
-- [ ] Regra de Negócio: Implementar a lógica que altera o status automaticamente ao atingir 3 denúncias
-
-- [ ] Bombeiros: Criar o endpoint (PATCH) para bombeiros atualizarem o status do foco (preenchendo a data de resolução)
-
-- [ ] Leitura/Filtros: Criar o endpoint do Mapa (GET) filtrando apenas focos ativos ou solucionados há menos de 24h
-
-- [ ] Estatísticas: Criar os endpoints de dados agregados (histórico, contagens diárias, cidades afetadas)
-
-### Fase 4: Otimização e Segurança
+### Fase 4: Otimização e Performance
 
 - [ ] Cache: Configurar a conexão da API com o Redis
+- [ ] Cache: Implementar rotinas de armazenamento/limpeza e atualização de dados em cache.
 
-- [ ] Cache: Implementar o armazenamento em cache para a rota de leitura do Mapa e Dashboards
 
-- [ ] Cache: Criar a rotina de invalidação/atualização do cache quando uma nova denúncia é feita ou um status é alterado
+### Fase 5: Segurança e Autenticação
 
-- [ ] Segurança: Implementar Rate Limiting no endpoint de denúncias para evitar ataques de bots/spam
+- [ ] Criar rotas de Auth: Registro e Login retornando o token JWT.
+- [ ] Implementar o hashing seguro de senhas no cadastro.
+- [ ] Criar a dependência (middleware no FastAPI, ex: Depends(get_current_user)) para decodificar e validar o JWT.
+- [ ] Implementar controle de papéis/RBAC (USER, FIREFIGHTER, ADMIN) no token.
+- [ ] Proteger Rotas: Adicionar a dependência de Auth nas rotas (Exigir usuário para denunciar; Exigir papel FIREFIGHTER para a rota PATCH).
+- [ ] Implementar Rate Limiting no endpoint de denúncias vinculado ao IP ou ID do usuário logado para evitar spam.
 
-### Fase 5: Testes (Unitários e de Integração)
+### Fase 6: Testes (Unitários e de Integração)
 
-- [ ] Configurar o framework de testes (ex: Jest se for Node, Pytest se for Python)
-
+- [ ] Configurar o framework de testes
 - [ ] Testes Unitários: Testar a lógica de cálculo da regra de 3 denúncias e transição de status (mockando o banco)
-
 - [ ] Testes Unitários: Testar a geração, expiração e validação de tokens JWT
-
 - [ ] Testes de Integração: Testar o fluxo completo de Reportar Foco usando um banco de dados de teste real com PostGIS
-
 - [ ] Testes de Integração: Simular o upload de imagens garantindo que a API lide corretamente com falhas do S3
-
 - [ ] Testes de Integração: Testar o controle de acesso, garantindo que usuários comuns recebam erro 403 ao tentar usar rotas de bombeiros
-
 - [ ] Testes de Integração: Testar se os dados retornados do Redis condizem com o PostgreSQL após uma invalidação de cache
 
 ### Fase 6: Finalização e Deploy
 
 - [ ] Configurar CI/CD (ex: GitHub Actions) para rodar os testes e o linter automaticamente a cada commit/PR
-
-- [ ] Isolar todas as credenciais e chaves secretas em variáveis de ambiente (.env)
-
-- [ ] Preparar a infraestrutura em nuvem e realizar o primeiro deploy da API, Banco e Redis
+- [ ] Isolar todas as credenciais e chaves secretas em variáveis de ambiente (.env) para o ambiente de produção.
+- [ ] Preparar a infraestrutura em nuvem e realizar o primeiro deploy da API, Banco e Redis.
