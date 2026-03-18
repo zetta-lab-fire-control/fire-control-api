@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON DATABASE test_db TO test_user;

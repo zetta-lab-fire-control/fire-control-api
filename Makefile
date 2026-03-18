@@ -1,4 +1,4 @@
-PROJECT=uai-fire-control-api
+NAME=uai-fire-control-api
 DEV_FILE=deploy/compose/dev.yml
 TEST_FILE=deploy/compose/test.yml
 PROD_FILE=deploy/compose/prod.yml
@@ -12,11 +12,7 @@ dev-start:
 dev-stop:
 	docker compose -p $(NAME)-dev -f $(DEV_FILE) down
 
-dev-restart:
-	dev-stop
-	dev-build
-	dev-start
-	make clean
+dev-restart: dev-stop dev-build dev-start make clean
 
 dev-restart-service:
 	docker compose -p $(NAME)-dev -f $(DEV_FILE) build --no-cache $(SERVICE)
@@ -59,7 +55,6 @@ pre-commit-install:
 	prek install
 
 pre-commit-run:
-	git add .
 	prek run --all-files
 
 clean:

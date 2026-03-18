@@ -3,11 +3,42 @@ name = "fire-control-api"
 version = "0.1.0"
 description = "fire-control-api is a Python package that provides an API for controlling fire-related reports and operations. It allows users to manage fire reports, retrieve information about fire incidents, and perform various actions related to fire control."
 readme = "README.md"
-requires-python = ">=3.14"
+
+requires-python = ">=3.13"
+
 dependencies = [
+    "python-dotenv==1.2.1",
+    "requests>=2.32.5",
 ]
+
+[project.optional-dependencies]
+
+api = [
+    "fastapi==0.115.12",
+    "uvicorn[standard]==0.34.0",
+    "pydantic==2.11.4",
+]
+
+cache = [
+    "redis==5.2.1",
+]
+
+database = [
+    "psycopg2-binary==2.9.10",
+    "sqlalchemy==2.0.40",
+]
+
+storage = [
+    "minio==7.1.0",
+]
+
 [dependency-groups]
+
 dev = [
     "prek>=0.3.6",
+    "pytest>=9.0.2",
     "ruff>=0.15.6",
 ]
+
+[tool.ruff]
+src = ["source"]
