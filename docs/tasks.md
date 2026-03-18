@@ -1,9 +1,9 @@
-# Desenvolvimento 
+# Desenvolvimento
 
 ### Fase 1: Planejamento e Design
 
 - [x] Inicializar o repositório Git e definir a estrutura de pastas (arquitetura do código)
-  
+
 - [x] Definir requisitos funcionais e não funcionais
 
 - [x] Desenhar a arquitetura geral e fluxo de dados
@@ -14,14 +14,14 @@
 ### Fase 2: Configuração do Projeto e Infraestrutura
 
 - [ ] Configurar o ambiente de desenvolvimento local (uv, docker, makefile)
-  
+
 - [ ] Configurar ferramentas de qualidade de código (Linter, Formatter)
-  
+
 
 ### Fase 3: Desenvolvimento - Serviços Core
 
 - [ ] Documentar os contratos da API (Criar o Swagger/OpenAPI spec das rotas)
-  
+
 - [ ] Configurar o ORM/Query Builder e executar as migrations iniciais do schema
 
 - [ ] Auth: Implementar registro e login gerando token JWT (com hash de senhas)

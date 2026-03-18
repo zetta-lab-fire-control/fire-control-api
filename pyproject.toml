@@ -5,6 +5,9 @@ description = "fire-control-api is a Python package that provides an API for con
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+]
+[dependency-groups]
+dev = [
     "prek>=0.3.6",
     "ruff>=0.15.6",
 ]

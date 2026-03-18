@@ -14,8 +14,8 @@ sequenceDiagram
     Note over Client, Storage: Carregar Mapa de Ocorrências
     Client->>API: GET /api/v1/occurrences (Filtros: Hoje, Norte de Minas)
     API->>Redis: Busca dados do mapa em cache
-    
-    alt Cache HIT 
+
+    alt Cache HIT
         Redis-->>API: Retorna JSON otimizado
     else Cache MISS
         API->>DB: Consulta focos ativos e histórico
@@ -25,17 +25,17 @@ sequenceDiagram
     API-->>Client: Response
 
     Note over Client, Storage: Registrar Denúncia
-    
+
     Client->>API: POST /api/v1/reports (Foto, Lat, Lng, Intensidade)
     API->>Storage: Faz upload da imagem enviada
     Storage-->>API: Retorna URL da imagem
-    
+
     API->>DB: Query Espacial (Raio 400m)
     DB-->>API: Resultado
-    
+
     API->>DB: POST/PUT ocorrence
     DB-->>API: Confirmação da transação
-    
+
     API->>Redis: Invalida/Atualiza cache do mapa afetado
     API-->>Client: Response
 
