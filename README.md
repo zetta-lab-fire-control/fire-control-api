@@ -65,7 +65,7 @@ O Nginx está configurado como um gateway para a aplicação, interceptando o tr
 
 Com os contêineres rodando, o FastAPI gera automaticamente a documentação interativa da API. Você pode visualizar todas as rotas, testar requisições e verificar os schemas de dados acessando:
 
-👉 **[https://localhost:8000/docs](https://www.google.com/search?q=https://localhost:8000/docs)**
+👉 **[https://localhost:8000/docs](https://localhost:8000/docs)**
 
 -----
 

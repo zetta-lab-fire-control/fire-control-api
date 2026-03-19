@@ -1,7 +1,3 @@
-FROM postgres:18
-
-RUN chown -R postgres:postgres /var/lib/postgresql/data
-
-USER postgres
+FROM postgis/postgis:18-3.6
 
 EXPOSE 5432

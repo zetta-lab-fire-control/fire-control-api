@@ -15,7 +15,7 @@ erDiagram
         string firstname
         string lastname
         string email UK
-        string password_hash
+        string password
         datetime created_at
         enum role "PUBLIC, FIREFIGHTER, ADMIN"
 

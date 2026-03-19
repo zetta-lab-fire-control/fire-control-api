@@ -26,6 +26,7 @@ cache = [
 database = [
     "psycopg2-binary==2.9.10",
     "sqlalchemy==2.0.40",
+    "geoalchemy2>=0.18.4",
 ]
 
 storage = [
