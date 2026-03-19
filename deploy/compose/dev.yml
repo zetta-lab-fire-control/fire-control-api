@@ -36,10 +36,9 @@ services:
   postgres:
     container_name: fire-control-api-dev-postgres
     restart: unless-stopped
-    image: postgres:18
-    # build:
-    #   context: ../containers/postgres
-    #   dockerfile: Dockerfile
+    build:
+      context: ../containers/postgres
+      dockerfile: Dockerfile
     volumes:
       - ../containers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres:/var/lib/postgresql

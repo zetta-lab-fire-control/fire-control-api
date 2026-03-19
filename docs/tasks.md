@@ -16,12 +16,12 @@
 
 ### Fase 3: Desenvolvimento - Serviços Core
 
-- [ ] Configurar a conexão do ORM (ex: SQLAlchemy + GeoAlchemy2) com o PostgreSQL.
-- [ ] Criar os Modelos (Tabelas do banco) para Usuários, Ocorrências e Denúncias.
-- [ ] Criar os Schemas (Pydantic) para validação de entrada e saída de dados.
-- [ ] Configurar o Alembic e executar as migrations iniciais do schema.
+- [x] Configurar a conexão do ORM (ex: SQLAlchemy + GeoAlchemy2) com o PostgreSQL.
+- [x] Criar os Modelos (Tabelas do banco) para Usuários, Ocorrências e Denúncias.
+- [x] Criar os Schemas (Pydantic) para validação de entrada e saída de dados.
+- [x] Configurar o Alembic e executar as migrations iniciais do schema.
 - [ ] Integrar o serviço de Cloud Storage (MinIO configurado) para upload de fotos.
-- [ ] Criar a query geoespacial (PostGIS ST_DWithin) para calcular o raio de 400m.
+- [x] Criar a query geoespacial (PostGIS ST_DWithin) para calcular o raio de 400m.
 - [ ] Criar as rotas de acordo com os casos de uso da api e as regras do negócio.
 - [ ] Documentar os contratos da API (Refinar o Swagger/OpenAPI gerado pelo FastAPI).
 
