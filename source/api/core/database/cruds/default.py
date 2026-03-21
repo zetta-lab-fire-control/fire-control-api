@@ -13,6 +13,14 @@ class CRUD[ModelType, CreateSchemaType: BaseModel, UpdateSchemaType: BaseModel]:
 
         self.model = model
 
+    def flush(self, db: Session, instance: CreateSchemaType) -> ModelType:
+
+        db_obj = self.model(**instance.model_dump())
+
+        db.add(db_obj)
+
+        db.flush()
+
     def before_create(self, data: dict) -> dict:
 
         return data

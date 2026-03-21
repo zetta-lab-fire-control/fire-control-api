@@ -7,4 +7,5 @@ ModelType = TypeVar("ModelType")
 
 class PaginatedResponse[ModelType](BaseModel):
     total: int
+
     items: list[ModelType]

@@ -7,6 +7,7 @@ from core.database.schemas.user import (
     UserPaginatedResponse,
 )
 from core.database.schemas.report import (
+    ReportRequestSchema,
     ReportCreateSchema,
     ReportReadSchema,
     ReportUpdateSchema,
@@ -21,6 +22,21 @@ from core.database.schemas.occurrence import (
     OccurrencePaginatedResponse,
 )
 
+from core.database.schemas.report_media import (
+    ReportMediaCreateSchema,
+    ReportMediaReadSchema,
+    ReportMediaUpdateSchema,
+    ReportMediaListSchema,
+    ReportMediaPaginatedResponse,
+)
+
+from core.database.schemas.media import (
+    MediaDownloadRequestSchema,
+    MediaUploadRequestSchema,
+    MediaResponseSchema,
+)
+
+
 __all__ = [
     "UserCreateSchema",
     "UserReadSchema",
@@ -28,6 +44,7 @@ __all__ = [
     "UserListSchema",
     "UserLoginSchema",
     "UserPaginatedResponse",
+    "ReportRequestSchema",
     "ReportCreateSchema",
     "ReportReadSchema",
     "ReportUpdateSchema",
@@ -38,4 +55,12 @@ __all__ = [
     "OccurrenceUpdateSchema",
     "OccurrencePaginatedResponse",
     "OccurrenceListSchema",
+    "MediaDownloadRequestSchema",
+    "MediaUploadRequestSchema",
+    "MediaResponseSchema",
+    "ReportMediaCreateSchema",
+    "ReportMediaReadSchema",
+    "ReportMediaUpdateSchema",
+    "ReportMediaListSchema",
+    "ReportMediaPaginatedResponse",
 ]

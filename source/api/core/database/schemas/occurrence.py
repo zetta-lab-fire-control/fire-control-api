@@ -18,9 +18,13 @@ class OccurrenceCreateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
+
     location: CoordinateSchema
+
     type: IncidentType
+
     intensity: IncidentIntensity
+
     status: IncidentStatus
 
 
@@ -28,13 +32,17 @@ class OccurrenceReadSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
+
     location: CoordinateSchema
+
     type: IncidentType
+
     intensity: IncidentIntensity
-    photo_url: str
-    video_url: str
+
     status: IncidentStatus
+
     resolved_at: str | None = None
+
     resolved_by: uuid.UUID | None = None
 
     @field_validator("location", mode="before")
@@ -56,11 +64,17 @@ class OccurrenceUpdateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
+
     location: CoordinateSchema
+
     type: IncidentType
+
     intensity: IncidentIntensity
+
     status: IncidentStatus
+
     resolved_at: str | None = None
+
     resolved_by: uuid.UUID | None = None
 
 
