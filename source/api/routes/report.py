@@ -17,7 +17,9 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
 )
 def create_report(
-    report: schemas.ReportCreateSchema, db: Session = Depends(PostgresClient.db)
+    report: schemas.ReportRequestSchema,
+    media: list[schemas.MediaResponseSchema],
+    db: Session = Depends(PostgresClient.db),
 ):
     occurrence_id = None
 
@@ -58,6 +60,21 @@ def create_report(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Report could not be created",
         )
+
+    for media_item in media:
+        media_create = schemas.ReportMediaCreateSchema(
+            report_id=db_report.id,
+            bucket_name=media_item.bucket_name,
+            object_name=media_item.object_name,
+        )
+
+        db_media = cruds.report_media_crud.create(db=db, instance=media_create)
+
+        if not db_media:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Media could not be created",
+            )
 
     return db_report
 
@@ -123,3 +140,81 @@ def read_reports(
 ):
     reports = cruds.report_crud.return_paginated_response(db, skip=skip, limit=limit)
     return schemas.ReportPaginatedResponse(data=reports, skip=skip, limit=limit)
+
+
+# @router.post(
+#     "/reports-media",
+#     response_model=schemas.ReportMediaReadSchema,
+#     status_code=status.HTTP_201_CREATED,
+# )
+# def create_report_media(
+#     media: schemas.ReportMediaCreateSchema,
+#     db: Session = Depends(PostgresClient.db)
+# ) -> schemas.ReportMediaReadSchema:
+
+#     db_media = cruds.report_media_crud.create(db=db, instance=media)
+
+#     if not db_media:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Report media could not be created",
+#         )
+
+#     return db_media
+
+# @router.get(
+#     "/reports-media/{media_id}",
+#     response_model=schemas.ReportMediaReadSchema,
+#     status_code=status.HTTP_200_OK,
+# )
+# def read_report_media(
+#     media_id: uuid.UUID,
+#     db: Session = Depends(PostgresClient.db)
+# ) -> schemas.ReportMediaReadSchema:
+
+#     db_media = cruds.report_media_crud.read(db=db, id=media_id)
+
+#     if not db_media:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Report media not found",
+#         )
+
+#     return db_media
+
+# @router.put(
+#     "/reports-media/{media_id}",
+#     response_model=schemas.ReportMediaReadSchema,
+#     status_code=status.HTTP_200_OK,
+# )
+# def update_report_media(
+#     media_id: uuid.UUID,
+#     media: schemas.ReportMediaUpdateSchema,
+#     db: Session = Depends(PostgresClient.db),
+# ) -> schemas.ReportMediaReadSchema:
+
+#     db_media = cruds.report_media_crud.update(db=db, id=media_id, instance=media)
+
+#     if not db_media:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Report media not found",
+#         )
+
+#     return db_media
+
+# @router.delete(
+#     "/reports-media/{media_id}",
+#     status_code=status.HTTP_204_NO_CONTENT,
+# )
+# def delete_report_media(
+#     media_id: uuid.UUID,
+#     db: Session = Depends(PostgresClient.db)
+# ):
+#     db_media = cruds.report_media_crud.delete(db=db, id=media_id)
+
+#     if not db_media:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Report media not found",
+#         )

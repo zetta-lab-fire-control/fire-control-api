@@ -22,10 +22,8 @@ class Report(DefaultModel):
 
     intensity = Column(String, nullable=True, default=IncidentIntensity.LOW.value)
 
-    photo_url = Column(String, nullable=True)
-
-    video_url = Column(String, nullable=True)
-
     user = relationship("User", back_populates="reports")
 
     occurrence = relationship("Occurrence", back_populates="reports")
+
+    media = relationship("ReportMedia", back_populates="report")
