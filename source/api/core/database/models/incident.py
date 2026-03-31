@@ -13,7 +13,6 @@ class IncidentIntensity(StrEnum):
 
 class IncidentStatus(StrEnum):
     PENDING = "pending_confirmation"
+    INVALIDATED = "invalidated"
     VALIDATED = "validated"
-    IN_PROGRESS = "in_progress"
-    COMPLETED = "completed"
-    FALSE_ALERT = "false_alert"
+    RESOLVED = "resolved"

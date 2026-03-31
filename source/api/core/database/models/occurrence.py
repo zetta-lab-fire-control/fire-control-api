@@ -19,6 +19,8 @@ class Occurrence(DefaultModel):
 
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=False)
 
+    city = Column(String, nullable=True, index=True)
+
     intensity = Column(String, nullable=True, default=IncidentIntensity.LOW.value)
 
     status = Column(String, nullable=False, default=IncidentStatus.PENDING.value)
