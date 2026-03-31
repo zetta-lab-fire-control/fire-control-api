@@ -7,7 +7,7 @@ from core.database import schemas
 from core.storage.service import MinioService
 
 
-router = APIRouter()
+router = APIRouter(tags=["media"])
 
 
 @router.post(

@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, case
 from sqlalchemy.orm import Session
 from geoalchemy2.types import Geography
 
@@ -6,7 +6,7 @@ from core.database.cruds.default import CRUD
 from core.database.schemas import OccurrenceCreateSchema, OccurrenceUpdateSchema
 from core.database.schemas.coordinates import CoordinateSchema
 from core.database.models import Occurrence
-from core.database.models.incident import IncidentStatus
+from core.database.models.incident import IncidentStatus, IncidentIntensity
 
 
 class OccurrenceCRUD(CRUD[Occurrence, OccurrenceCreateSchema, OccurrenceUpdateSchema]):
@@ -35,6 +35,40 @@ class OccurrenceCRUD(CRUD[Occurrence, OccurrenceCreateSchema, OccurrenceUpdateSc
         active_occurrence = query.first()
 
         return active_occurrence
+
+    def return_raw_indicators_data(self, db: Session):
+
+        inactive_statuses = [
+            IncidentStatus.RESOLVED.value,
+            IncidentStatus.INVALIDATED.value,
+        ]
+
+        intensity_weight = case(
+            (self.model.intensity == IncidentIntensity.LOW.value, 1),
+            (self.model.intensity == IncidentIntensity.MEDIUM.value, 2),
+            (self.model.intensity == IncidentIntensity.HIGH.value, 3),
+            else_=0,
+        )
+
+        result = (
+            db.query(
+                func.count(self.model.id).label("total_active"),
+                func.count(func.distinct(self.model.city)).label(
+                    "affected_municipalities"
+                ),
+                func.avg(intensity_weight).label("average_intensity"),
+            )
+            .filter(self.model.status.notin_(inactive_statuses))
+            .first()
+        )
+
+        return {
+            "total_active": result.total_active or 0,
+            "affected_municipalities": result.affected_municipalities or 0,
+            "average_intensity": float(result.average_intensity)
+            if result.average_intensity
+            else 0.0,
+        }
 
 
 occurrence_crud = OccurrenceCRUD(Occurrence)

@@ -20,6 +20,7 @@ from core.database.schemas.occurrence import (
     OccurrenceUpdateSchema,
     OccurrenceListSchema,
     OccurrencePaginatedResponse,
+    OccurrenceIndicatorsSchema,
 )
 
 from core.database.schemas.report_media import (
@@ -55,6 +56,7 @@ __all__ = [
     "OccurrenceUpdateSchema",
     "OccurrencePaginatedResponse",
     "OccurrenceListSchema",
+    "OccurrenceIndicatorsSchema",
     "MediaDownloadRequestSchema",
     "MediaUploadRequestSchema",
     "MediaResponseSchema",

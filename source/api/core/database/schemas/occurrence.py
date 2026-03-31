@@ -86,3 +86,13 @@ class OccurrenceListSchema(BaseModel):
 
 class OccurrencePaginatedResponse(PaginatedResponse[OccurrenceReadSchema]):
     pass
+
+
+class OccurrenceIndicatorsSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    total_active: int
+
+    affected_municipalities: int
+
+    risk_level: str

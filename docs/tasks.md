@@ -22,24 +22,15 @@
 - [x] Configurar o Alembic e executar as migrations iniciais do schema.
 - [x] Integrar o serviço de Cloud Storage (MinIO configurado) para upload de fotos.
 - [x] Criar a query geoespacial (PostGIS ST_DWithin) para calcular o raio de 400m.
-- [ ] Criar as rotas de acordo com os casos de uso da api e as regras do negócio.
-- [ ] Documentar os contratos da API (Refinar o Swagger/OpenAPI gerado pelo FastAPI).
+- [x] Criar as rotas de acordo com os casos de uso da api e as regras do negócio.
+- [x] Documentar os contratos da API (Refinar o Swagger/OpenAPI gerado pelo FastAPI).
 
 
 ### Fase 4: Otimização e Performance
 
-- [ ] Cache: Configurar a conexão da API com o Redis
-- [ ] Cache: Implementar rotinas de armazenamento/limpeza e atualização de dados em cache.
+- [x] Cache: Configurar a conexão da API com o Redis
+- [x] Cache: Implementar rotinas de armazenamento/limpeza e atualização de dados em cache.
 
-
-### Fase 5: Segurança e Autenticação
-
-- [ ] Criar rotas de Auth: Registro e Login retornando o token JWT.
-- [ ] Implementar o hashing seguro de senhas no cadastro.
-- [ ] Criar a dependência (middleware no FastAPI, ex: Depends(get_current_user)) para decodificar e validar o JWT.
-- [ ] Implementar controle de papéis/RBAC (USER, FIREFIGHTER, ADMIN) no token.
-- [ ] Proteger Rotas: Adicionar a dependência de Auth nas rotas (Exigir usuário para denunciar; Exigir papel FIREFIGHTER para a rota PATCH).
-- [ ] Implementar Rate Limiting no endpoint de denúncias vinculado ao IP ou ID do usuário logado para evitar spam.
 
 ### Fase 6: Testes (Unitários e de Integração)
 
@@ -51,8 +42,21 @@
 - [ ] Testes de Integração: Testar o controle de acesso, garantindo que usuários comuns recebam erro 403 ao tentar usar rotas de bombeiros
 - [ ] Testes de Integração: Testar se os dados retornados do Redis condizem com o PostgreSQL após uma invalidação de cache
 
+### Fase 5: Segurança e Autenticação
+
+- [ ] Criar rotas de Auth: Registro e Login retornando o token JWT.
+- [ ] Implementar o hashing seguro de senhas no cadastro.
+- [ ] Criar a dependência (middleware no FastAPI, ex: Depends(get_current_user)) para decodificar e validar o JWT.
+- [ ] Implementar controle de papéis/RBAC (USER, FIREFIGHTER, ADMIN) no token.
+- [ ] Proteger Rotas: Adicionar a dependência de Auth nas rotas (Exigir usuário para denunciar; Exigir papel FIREFIGHTER para a rota PATCH).
+- [ ] Implementar Rate Limiting no endpoint de denúncias vinculado ao IP ou ID do usuário logado para evitar spam.
+- [ ] Revisar as rotas de acordo com os casos de uso da api e as regras do negócio.
+- [ ] Revisar os contratos da API (Refinar o Swagger/OpenAPI gerado pelo FastAPI).
+- [ ] Revisar os testes unitários e de integração baseado nos serviços de autenticação.
+
 ### Fase 6: Finalização e Deploy
 
+- [ ] Versionar a API
 - [ ] Configurar CI/CD (ex: GitHub Actions) para rodar os testes e o linter automaticamente a cada commit/PR
 - [ ] Isolar todas as credenciais e chaves secretas em variáveis de ambiente (.env) para o ambiente de produção.
 - [ ] Preparar a infraestrutura em nuvem e realizar o primeiro deploy da API, Banco e Redis.

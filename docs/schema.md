@@ -26,7 +26,7 @@ erDiagram
         uuid report_id FK
         geometry location "(Lat, Lng)"
         enum intensity_avg "BAIXA, MEDIA, ALTA"
-        enum status "QUEUED, VALIDATED, EXECUTING, RESOLVED, FALSE_ALERT"
+        enum status "QUEUED, VALIDATED, EXECUTING, RESOLVED, INVALIDATED"
         datetime resolved_at
         datetime created_at
     }
