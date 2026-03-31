@@ -32,7 +32,7 @@
 - [x] Cache: Implementar rotinas de armazenamento/limpeza e atualização de dados em cache.
 
 
-### Fase 6: Testes (Unitários e de Integração)
+### Fase 5: Testes (Unitários e de Integração)
 
 - [ ] Configurar o framework de testes
 - [ ] Testes Unitários: Testar a lógica de cálculo da regra de 3 denúncias e transição de status (mockando o banco)
@@ -42,7 +42,7 @@
 - [ ] Testes de Integração: Testar o controle de acesso, garantindo que usuários comuns recebam erro 403 ao tentar usar rotas de bombeiros
 - [ ] Testes de Integração: Testar se os dados retornados do Redis condizem com o PostgreSQL após uma invalidação de cache
 
-### Fase 5: Segurança e Autenticação
+### Fase 6: Segurança e Autenticação
 
 - [ ] Criar rotas de Auth: Registro e Login retornando o token JWT.
 - [ ] Implementar o hashing seguro de senhas no cadastro.
