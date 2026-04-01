@@ -4,6 +4,8 @@ services:
     build:
       context: ../../
       dockerfile: deploy/containers/fastapi/Dockerfile
+      args:
+        - TEST=TRUE
     networks:
       - fire-control-api
     volumes:
@@ -11,15 +13,6 @@ services:
       - ../../source/tests:/api/tests
     env_file:
       - ../variables/test
-    args:
-      - TEST=TRUE
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
     command: >
       uv run --no-sync pytest
       --cov=api
@@ -29,7 +22,6 @@ services:
 
   postgres:
     container_name: fire-control-api-test-postgres
-    restart: unless-stopped
     build:
       context: ../containers/postgres
       dockerfile: Dockerfile
@@ -41,9 +33,37 @@ services:
     networks:
       - fire-control-api
 
+  redis:
+    container_name: fire-control-api-test-redis
+    build:
+      context: ../containers/redis
+      dockerfile: Dockerfile
+    volumes:
+      - redis:/data
+    networks:
+      - fire-control-api
+
+  minio:
+    container_name: fire-control-api-test-minio
+    restart: unless-stopped
+    build:
+      context: ../containers/minio
+      dockerfile: Dockerfile
+    volumes:
+      - minio:/data
+    networks:
+      - fire-control-api
+    env_file:
+      - ../variables/test
+    command: server /data --console-address ":9001"
+
 volumes:
   postgres:
     name: fire-control-api-test-postgres
+  redis:
+    name: fire-control-api-test-redis
+  minio:
+    name: fire-control-api-test-minio
 
 networks:
   fire-control-api:
