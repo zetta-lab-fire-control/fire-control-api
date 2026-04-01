@@ -1,0 +1,51 @@
+services:
+  api:
+    container_name: fire-control-api-test-api
+    build:
+      context: ../../
+      dockerfile: deploy/containers/fastapi/Dockerfile
+    networks:
+      - fire-control-api
+    volumes:
+      - ../../source/api:/api
+      - ../../source/tests:/api/tests
+    env_file:
+      - ../variables/test
+    args:
+      - TEST=TRUE
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: >
+      uv run --no-sync pytest
+      --cov=api
+      --cov-report=term-missing
+      --cov-report=markdown:/api/tests/tests_coverage.md
+      /api/tests/
+
+  postgres:
+    container_name: fire-control-api-test-postgres
+    restart: unless-stopped
+    build:
+      context: ../containers/postgres
+      dockerfile: Dockerfile
+    volumes:
+      - ../containers/postgres/init-test.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres:/var/lib/postgresql
+    env_file:
+      - ../variables/test
+    networks:
+      - fire-control-api
+
+volumes:
+  postgres:
+    name: fire-control-api-test-postgres
+
+networks:
+  fire-control-api:
+    name: fire-control-api-test-network
+    driver: bridge
