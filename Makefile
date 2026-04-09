@@ -60,3 +60,6 @@ pre-commit-run:
 
 clean:
 	docker system prune -f
+
+create-release:
+	gh release create $(VERSION) --title "Release $(VERSION)" --notes "Release of version $(VERSION) of the api."
