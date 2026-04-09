@@ -2,7 +2,8 @@ from enum import StrEnum
 
 
 class IncidentType(StrEnum):
-    FIRE = "fire"
+    FOREST_FIRE = "forest_fire"
+    URBAN_FIRE = "urban_fire"
 
 
 class IncidentIntensity(StrEnum):

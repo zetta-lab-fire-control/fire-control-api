@@ -1,0 +1,27 @@
+[
+    {
+        "name": "reports",
+        "description": "Endpoints for creating and managing fire reports, including details such as location, severity, and status."
+    },
+    {
+        "name": "occurrences",
+        "description": "Endpoints for managing confirmed and validated fire incidents."
+    },
+    {
+        "name": "users",
+        "description": "Endpoints for managing users and their permissions in the system."
+    },
+    {
+        "name": "media",
+        "description": "Endpoints for managing multimedia files related to fires, such as photos and videos."
+    },
+    {
+        "name": "status",
+        "description": "Endpoints for monitoring the status of the system and the health of the API."
+    },
+    {
+        "name": "auth",
+        "description": "Endpoints related to user authentication and authorization."
+    }
+
+]

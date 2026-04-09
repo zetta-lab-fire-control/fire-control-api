@@ -28,7 +28,7 @@
 
 - RNF01 - Performance Geoespacial: O banco de dados deve utilizar índices espaciais (ex: GIST no PostGIS) para garantir que a busca do raio de 400m responda em milissegundos.
 
-- RNF02 - Segurança: Todas as rotas (exceto Home, Histórico e Reportar Foco anônimo) devem ser protegidas por JWT. Senhas devem ser armazenadas com hash (ex: bcrypt).
+- RNF02 - Segurança: Todas as rotas (exceto Home) devem ser protegidas por JWT. Senhas devem ser armazenadas com hash (ex: bcrypt).
 
 - RNF03 - Rate Limiting: O endpoint de Reportar Foco deve ter limite de requisições por IP para evitar ataques de spam/bots que possam gerar falsos alertas.
 

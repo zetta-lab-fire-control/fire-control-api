@@ -1,39 +1,69 @@
-from pydantic import BaseModel, ConfigDict
+import uuid
 
-from enum import StrEnum
+from typing import Optional
 
+from pydantic import BaseModel, ConfigDict, Field
 
-class MediaExtension(StrEnum):
-    PNG = "png"
+from core.database.schemas.default import PaginatedResponse
 
-    MP4 = "mp4"
-
-    PDF = "pdf"
-
-    CSV = "csv"
+from core.database.enums.media import Bucket, MediaExtension, MediaType
 
 
-class MediaDownloadRequestSchema(BaseModel):
+class MediaCreateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    bucket_name: str = "reports"
+    bucket: Bucket = Field(
+        ..., description="The bucket where the media will be stored."
+    )
 
-    extension_name: MediaExtension
+    type: MediaType = Field(..., description="The type of the media.")
+
+    extension: MediaExtension = Field(..., description="The extension of the media.")
+
+    size: int = Field(..., description="The size of the media in bytes.")
+
+    description: Optional[str] = Field(None, description="A description of the media.")
 
 
-class MediaUploadRequestSchema(BaseModel):
+class MediaReadSchema(MediaCreateSchema):
     model_config = ConfigDict(from_attributes=True)
 
-    bucket_name: str
+    id: uuid.UUID = Field(..., description="The ID of the media.")
 
-    object_name: str
+    name: str = Field(..., description="The name of the media.")
 
 
-class MediaResponseSchema(BaseModel):
+class MediaUpdateSchema(MediaCreateSchema):
     model_config = ConfigDict(from_attributes=True)
 
-    bucket_name: str
+    id: uuid.UUID = Field(..., description="The ID of the media.")
 
-    object_name: str
+    name: str = Field(..., description="The name of the media.")
 
-    object_url: str
+
+class MediaUploadResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    instance_metadata: MediaReadSchema = Field(
+        ..., description="Metadata of the media instance that was created."
+    )
+
+    upload_url: str = Field(
+        ..., description="The URL where the media can be uploaded to."
+    )
+
+
+class MediaDownloadResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    instance_metadata: MediaReadSchema = Field(
+        ..., description="Metadata of the media instance that will be downloaded."
+    )
+
+    download_url: str = Field(
+        ..., description="The URL from which the media can be downloaded."
+    )
+
+
+class MediaPaginatedResponse(PaginatedResponse[MediaReadSchema]):
+    pass

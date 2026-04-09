@@ -9,8 +9,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class MinioClient:
     def __init__(self):
         self.endpoint = os.getenv("MINIO_URL")
-        self.access_key = os.getenv("MINIO_ACCESS_KEY")
-        self.secret_key = os.getenv("MINIO_SECRET_KEY")
+        self.access_key = os.getenv("MINIO_ROOT_USER")
+        self.secret_key = os.getenv("MINIO_ROOT_PASSWORD")
 
     @property
     def client(self, secure=False):

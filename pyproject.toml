@@ -27,11 +27,11 @@ cache = [
 database = [
     "psycopg2-binary==2.9.10",
     "sqlalchemy==2.0.40",
-    "geoalchemy2>=0.18.4",
+    "geoalchemy2[shapely]>=0.18.4",
 ]
 
 storage = [
-    "minio==7.1.0",
+    "minio==7.2.20",
 ]
 
 [dependency-groups]

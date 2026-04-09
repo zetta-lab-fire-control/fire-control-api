@@ -7,7 +7,6 @@
 ### Schema
 
 ```mermaid
-
 erDiagram
 
     USERS {
@@ -15,6 +14,7 @@ erDiagram
         string firstname
         string lastname
         string email UK
+        string telephone
         string password
         datetime created_at
         enum role "PUBLIC, FIREFIGHTER, ADMIN"
@@ -25,10 +25,13 @@ erDiagram
         uuid id PK
         uuid report_id FK
         geometry location "(Lat, Lng)"
-        enum intensity_avg "BAIXA, MEDIA, ALTA"
+        string city
+        enum type "FOREST_FIRE, URBAN_FIRE, OTHER"
+        enum intensity "LOW, HIGH, MEDIUM"
         enum status "QUEUED, VALIDATED, EXECUTING, RESOLVED, INVALIDATED"
         datetime resolved_at
         datetime created_at
+        string resolved_by
     }
 
     REPORTS {
@@ -44,5 +47,4 @@ erDiagram
     USERS ||--o{ REPORTS : "add"
     USERS ||--o{ OCCURRENCES : "manage"
     OCCURRENCES ||--o{ REPORTS : "contain"
-
 ```

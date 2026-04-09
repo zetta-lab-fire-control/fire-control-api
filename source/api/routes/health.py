@@ -1,13 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
-router = APIRouter(tags=["status"])
+router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 def home():
     return {"message": "Fire-Control-API is running!"}
 
 
-@router.get("/health")
+@router.get("/health", status_code=status.HTTP_200_OK)
 def health():
     return {"message": "Fire-Control-API is running!"}

@@ -5,7 +5,7 @@ from geoalchemy2 import Geometry
 
 from core.database.models.default import DefaultModel
 
-from core.database.models.incident import (
+from core.database.enums.incident import (
     IncidentType,
     IncidentIntensity,
     IncidentStatus,
@@ -15,7 +15,7 @@ from core.database.models.incident import (
 class Occurrence(DefaultModel):
     __tablename__ = "occurrences"
 
-    type = Column(String, nullable=True, default=IncidentType.FIRE.value)
+    type = Column(String, nullable=True, default=IncidentType.FOREST_FIRE.value)
 
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=False)
 
