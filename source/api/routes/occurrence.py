@@ -1,16 +1,19 @@
 import uuid as uid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 from clients.postgres import PostgresClient
 from core.database import cruds, schemas
 from core.cache.service import CacheService
+from core.database.enums.incident import IncidentStatus
 from core.database.services.ocurrence import OccurrenceService
 
 
-router = APIRouter(tags=["occurrences"])
+router = APIRouter()
 
 
 @router.post(
@@ -90,7 +93,7 @@ def read_occurrence(occurrence_id: uid.UUID, db: Session = Depends(PostgresClien
             status_code=status.HTTP_404_NOT_FOUND, detail="Occurrence not found"
         )
 
-    return db_occurrence
+    return schemas.OccurrenceReadSchema.model_validate(db_occurrence)
 
 
 @router.get(
@@ -99,24 +102,71 @@ def read_occurrence(occurrence_id: uid.UUID, db: Session = Depends(PostgresClien
     status_code=status.HTTP_200_OK,
 )
 @cache(expire=180, namespace="occurrences")
-def read_occurrences(
-    skip: int = 0, limit: int = 10, db: Session = Depends(PostgresClient.db)
+def list_occurrences(
+    city: str = None,
+    status: IncidentStatus = None,
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(PostgresClient.db),
 ):
 
-    occurrences = cruds.occurrence_crud.read_all(db, skip=skip, limit=limit)
+    filters = {
+        "city": city if city else None,
+        "status": status if status else None,
+    }
 
-    total = cruds.occurrence_crud.count(db)
+    occurrences = cruds.occurrence_crud.return_paginated_response(
+        db=db, skip=skip, limit=limit, **filters
+    )
 
-    return schemas.OccurrencePaginatedResponse(total=total, items=occurrences)
+    return schemas.OccurrencePaginatedResponse(**occurrences)
 
 
 @router.get(
-    "/occurrences/indicators",
-    response_model=schemas.OccurrenceIndicatorsSchema,
+    "/occurrences/indicators/history",
+    response_model=schemas.OccurrenceHistorySchema,
     status_code=status.HTTP_200_OK,
 )
 @cache(expire=60, namespace="occurrences")
-def get_indicators(db: Session = Depends(PostgresClient.db)):
+def get_history(
+    start_date: datetime = Query(
+        ..., description="Start date in ISO format (YYYY-MM-DD)"
+    ),
+    end_date: datetime = Query(..., description="End date in ISO format (YYYY-MM-DD)"),
+    db: Session = Depends(PostgresClient.db),
+):
     occurrence_service = OccurrenceService()
-    indicators = occurrence_service.get_indicators_data(db)
+    indicators = occurrence_service.get_history_indicators(db, start_date, end_date)
+    return indicators
+
+
+@router.get(
+    "/occurrences/indicators/operational",
+    response_model=schemas.OccurrenceOperationalIndicatorsSchema,
+    status_code=status.HTTP_200_OK,
+)
+@cache(expire=60, namespace="occurrences")
+def get_operational_indicators(
+    city: str = Query(..., description="City name for which to retrieve indicators"),
+    target_date: datetime = Query(
+        ..., description="Target date in ISO format (YYYY-MM-DD)"
+    ),
+    db: Session = Depends(PostgresClient.db),
+):
+    occurrence_service = OccurrenceService()
+    indicators = occurrence_service.get_operational_indicators(
+        db, city=city, target_date=target_date
+    )
+    return indicators
+
+
+@router.get(
+    "/occurrences/indicators/public",
+    response_model=schemas.OccurrencePublicIndicatorsSchema,
+    status_code=status.HTTP_200_OK,
+)
+@cache(expire=60, namespace="occurrences")
+def get_public_indicators(db: Session = Depends(PostgresClient.db)):
+    occurrence_service = OccurrenceService()
+    indicators = occurrence_service.get_public_indicators(db)
     return indicators

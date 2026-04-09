@@ -20,23 +20,29 @@ from core.database.schemas.occurrence import (
     OccurrenceUpdateSchema,
     OccurrenceListSchema,
     OccurrencePaginatedResponse,
-    OccurrenceIndicatorsSchema,
-)
-
-from core.database.schemas.report_media import (
-    ReportMediaCreateSchema,
-    ReportMediaReadSchema,
-    ReportMediaUpdateSchema,
-    ReportMediaListSchema,
-    ReportMediaPaginatedResponse,
+    OccurrenceHistorySchema,
+    OccurrencePublicIndicatorsSchema,
+    OccurrenceOperationalIndicatorsSchema,
 )
 
 from core.database.schemas.media import (
-    MediaDownloadRequestSchema,
-    MediaUploadRequestSchema,
-    MediaResponseSchema,
+    MediaCreateSchema,
+    MediaReadSchema,
+    MediaUpdateSchema,
+    MediaPaginatedResponse,
+    MediaDownloadResponseSchema,
+    MediaUploadResponseSchema,
 )
 
+from core.database.schemas.media_report import (
+    MediaReportCreateSchema,
+    MediaReportReadSchema,
+    MediaReportUpdateSchema,
+    MediaReportListSchema,
+    MediaReportPaginatedResponse,
+)
+
+from core.database.schemas.default import PaginatedResponse
 
 __all__ = [
     "UserCreateSchema",
@@ -56,13 +62,19 @@ __all__ = [
     "OccurrenceUpdateSchema",
     "OccurrencePaginatedResponse",
     "OccurrenceListSchema",
-    "OccurrenceIndicatorsSchema",
-    "MediaDownloadRequestSchema",
-    "MediaUploadRequestSchema",
-    "MediaResponseSchema",
-    "ReportMediaCreateSchema",
-    "ReportMediaReadSchema",
-    "ReportMediaUpdateSchema",
-    "ReportMediaListSchema",
-    "ReportMediaPaginatedResponse",
+    "OccurrenceHistorySchema",
+    "OccurrencePublicIndicatorsSchema",
+    "OccurrenceOperationalIndicatorsSchema",
+    "MediaDownloadResponseSchema",
+    "MediaUploadResponseSchema",
+    "MediaCreateSchema",
+    "MediaReadSchema",
+    "MediaUpdateSchema",
+    "MediaPaginatedResponse",
+    "MediaReportCreateSchema",
+    "MediaReportReadSchema",
+    "MediaReportUpdateSchema",
+    "MediaReportListSchema",
+    "MediaReportPaginatedResponse",
+    "PaginatedResponse",
 ]

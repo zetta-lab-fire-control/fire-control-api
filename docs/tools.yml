@@ -3,6 +3,8 @@ tools:
     task: Manage repository
   - name: Git
     task: Version control
+  - name: Make
+    task: Command automation
   - name: Markdown
     task: Documentation
   - name: Mermaid

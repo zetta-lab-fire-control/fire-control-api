@@ -1,1 +1,1 @@
-GRANT ALL PRIVILEGES ON DATABASE test_db TO test_user;
+GRANT ALL PRIVILEGES ON DATABASE fire_control_api_test TO fire_control_api_test;

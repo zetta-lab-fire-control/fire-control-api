@@ -1,10 +1,12 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from core.database.cruds import occurrence_crud
 
 
 class OccurrenceService:
-    def calculate__risk_score(self, total: int, avg_intensity: float) -> str:
+    def calculate_risk_score(self, total: int, avg_intensity: float) -> str:
 
         if total == 0:
             return "low"
@@ -18,23 +20,54 @@ class OccurrenceService:
         else:
             return "low"
 
-    def get_indicators_data(self, db: Session) -> dict:
+    def get_public_indicators(self, db: Session) -> dict:
 
-        raw_data = occurrence_crud.get_indicators_raw_data(db)
+        raw_data = occurrence_crud.return_public_indicators(db)
 
-        if raw_data["total_active"] == 0:
+        if raw_data["active_occurrences"] == 0:
             return {
-                "total_active": 0,
-                "affected_municipalities": 0,
+                "active_occurrences": 0,
+                "affected_municipalities_count": 0,
                 "risk_level": "low",
             }
 
-        risk_level = self.calculate_risk_level(
-            total=raw_data["total_active"], avg_intensity=raw_data["average_intensity"]
+        risk_level = self.calculate_risk_score(
+            total=raw_data["active_occurrences"],
+            avg_intensity=raw_data["average_intensity"],
         )
 
         return {
-            "total_active": raw_data["total_active"],
-            "affected_municipalities": raw_data["affected_municipalities"],
+            "active_occurrences": raw_data["active_occurrences"],
+            "affected_municipalities_count": raw_data["affected_municipalities_count"],
             "risk_level": risk_level,
+            "last_updated": datetime.now(),
+        }
+
+    def get_operational_indicators(
+        self, db: Session, city: str, target_date: datetime
+    ) -> dict:
+
+        status_data = occurrence_crud.return_operational_indicators(
+            db, city, target_date
+        )
+
+        return {
+            "status_count": {"counts": status_data},
+            "date": target_date,
+            "city": city,
+        }
+
+    def get_history_indicators(
+        self, db: Session, start_date: datetime, end_date: datetime
+    ) -> dict:
+
+        data = occurrence_crud.return_history_indicators(db, start_date, end_date)
+
+        return {
+            "occurrences_count": data["total"],
+            "status_count": {"counts": data["status_counts"]},
+            "intensity_count": {"counts": data["intensity_counts"]},
+            "cities_count": data["city_counts"],
+            "start_date": start_date,
+            "end_date": end_date,
         }

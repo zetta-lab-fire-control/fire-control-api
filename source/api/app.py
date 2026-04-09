@@ -3,15 +3,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from pathlib import Path
 from redis import asyncio as aioredis
 
-from routes import router
 
 from clients.postgres import PostgresClient
-
-description_path = Path(__file__).parent / "description.md"
-version_path = Path(__file__).parent / "version.txt"
+from docs import api_metadata
+from routes import router
 
 
 @asynccontextmanager
@@ -30,22 +27,11 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
 
-    try:
-        api_version = version_path.read_text(encoding="utf-8").strip()
-
-    except FileNotFoundError:
-        api_version = "0.0.0"
-
-    try:
-        api_description = description_path.read_text(encoding="utf-8").strip()
-
-    except FileNotFoundError:
-        api_description = ""
-
     app = FastAPI(
         title="Fire-Control-Api",
-        version=api_version,
-        description=api_description,
+        version=api_metadata["api_version"],
+        description=api_metadata["api_description"],
+        openapi_tags=api_metadata["api_tags"],
         lifespan=lifespan,
     )
 

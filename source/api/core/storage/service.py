@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from clients.minio import MinioClient
 
+from core.database.enums.media import Bucket
+
 
 class MinioService:
     def __init__(self):
@@ -9,9 +11,7 @@ class MinioService:
 
     @property
     def buckets(self):
-        return [
-            "reports",
-        ]
+        return [bucket.value for bucket in Bucket]
 
     def create_buckets(self):
         for bucket in self.buckets:

@@ -4,13 +4,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
+
 from core.cache.service import CacheService
 from core.database.schemas.coordinates import CoordinateSchema
-from core.database.models.incident import IncidentStatus
+from core.database.enums.incident import IncidentStatus
+from core.database.models.occurrence import Occurrence
 from core.database import cruds, schemas
 from clients.postgres import PostgresClient
 
-router = APIRouter(tags=["reports"])
+router = APIRouter()
 
 
 @router.post(
@@ -20,42 +22,45 @@ router = APIRouter(tags=["reports"])
 )
 def create_report(
     report: schemas.ReportRequestSchema,
-    media: list[schemas.MediaResponseSchema],
+    media: list[schemas.MediaReadSchema],
     db: Session = Depends(PostgresClient.db),
 ):
-    occurrence_id = None
 
-    point = CoordinateSchema(longitude=report.longitude, latitude=report.latitude)
+    point = CoordinateSchema.model_validate(report.location)
 
-    active_occurrence = cruds.occurrence_crud.return_occurrence_within_radius(
-        db=db, point=point, radius=400
+    active_occurrence: Occurrence | None = (
+        cruds.occurrence_crud.return_occurrence_within_radius(
+            db=db, point=point, radius=400
+        )
     )
 
-    if active_occurrence:
-        occurrence_id = active_occurrence.id
-
-    if not occurrence_id:
+    if not active_occurrence:
         occurrence = schemas.OccurrenceCreateSchema(
-            longitude=report.longitude,
-            latitude=report.latitude,
+            location=point,
             type=report.type,
-            status=IncidentStatus.PENDING.value,
             intensity=report.intensity,
+            status=IncidentStatus.PENDING.value,
         )
 
-        db_occurrence = cruds.occurrence_crud.create(db=db, instance=occurrence)
-
-        occurrence_id = db_occurrence.id
-
-    if not db_occurrence:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Occurrence could not be created",
+        db_occurrence = cruds.occurrence_crud.create(
+            db=db, instance=occurrence, commit=False
         )
 
-    report.occurrence_id = occurrence_id
+        if not db_occurrence:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Occurrence could not be created",
+            )
 
-    db_report = cruds.report_crud.create(db=db, instance=report)
+    report_data = report.model_dump()
+
+    report_data["occurrence_id"] = (
+        active_occurrence.id if active_occurrence else db_occurrence.id
+    )
+
+    report_create = schemas.ReportCreateSchema(**report_data)
+
+    db_report = cruds.report_crud.create(db=db, instance=report_create, commit=False)
 
     if not db_report:
         raise HTTPException(
@@ -64,19 +69,24 @@ def create_report(
         )
 
     for media_item in media:
-        media_create = schemas.ReportMediaCreateSchema(
+        media_report_create = schemas.MediaReportCreateSchema(
             report_id=db_report.id,
-            bucket_name=media_item.bucket_name,
-            object_name=media_item.object_name,
+            media_id=media_item.id,
         )
 
-        db_media = cruds.report_media_crud.create(db=db, instance=media_create)
+        db_media = cruds.media_report_crud.create(
+            db=db, instance=media_report_create, commit=False
+        )
 
         if not db_media:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Media could not be created",
             )
+
+    db.commit()
+
+    db.refresh(db_report)
 
     CacheService.clear_cache(namespace="reports")
 
@@ -136,7 +146,7 @@ def read_report(report_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="Report not found"
         )
 
-    return db_report
+    return schemas.ReportReadSchema.model_validate(db_report)
 
 
 @router.get(
@@ -145,12 +155,31 @@ def read_report(report_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
     status_code=status.HTTP_200_OK,
 )
 @cache(expire=60, namespace="reports")
-def read_reports(
+def list_reports(
     skip: int = 0, limit: int = 10, db: Session = Depends(PostgresClient.db)
 ):
 
     reports = cruds.report_crud.return_paginated_response(db, skip=skip, limit=limit)
 
-    total = cruds.report_crud.count(db)
+    return schemas.ReportPaginatedResponse(**reports)
 
-    return schemas.ReportPaginatedResponse(total=total, items=reports)
+
+@router.get(
+    "/reports/{report_id}/media",
+    response_model=schemas.MediaReportPaginatedResponse,
+    status_code=status.HTTP_200_OK,
+)
+def list_report_media(
+    report_id: uid.UUID,
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(PostgresClient.db),
+):
+
+    filters = {"report_id": report_id}
+
+    media_reports = cruds.media_report_crud.return_paginated_response(
+        db, skip=skip, limit=limit, **filters
+    )
+
+    return schemas.MediaReportPaginatedResponse(**media_reports)

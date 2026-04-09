@@ -1,0 +1,105 @@
+services:
+  api:
+    container_name: fire-control-api-test-api
+    build:
+      context: ../../
+      dockerfile: deploy/containers/fastapi/Dockerfile
+      args:
+        - TEST=true
+    networks:
+      - fire-control-api
+    volumes:
+      - ../../source/api:/api
+      - ../../source/tests:/tests
+    env_file:
+      - ../variables/test
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+    command: >
+      pytest
+      --cov=/api
+      --cov-report=term-missing
+      --cov-report=markdown:/tests/coverage.md
+      /tests/
+
+  postgres:
+    container_name: fire-control-api-test-postgres
+    build:
+      context: ../containers/postgres
+      dockerfile: Dockerfile
+    volumes:
+      - ../containers/postgres/init-test.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres:/var/lib/postgresql
+    env_file:
+      - ../variables/test
+    networks:
+      - fire-control-api
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "$$POSTGRES_USER",
+          "-d",
+          "$$POSTGRES_DB",
+          "-h",
+          "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    command: ["postgres", "-c", "listen_addresses=*"]
+
+  redis:
+    container_name: fire-control-api-test-redis
+    build:
+      context: ../containers/redis
+      dockerfile: Dockerfile
+    volumes:
+      - redis:/data
+    networks:
+      - fire-control-api
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    container_name: fire-control-api-test-minio
+    restart: unless-stopped
+    build:
+      context: ../containers/minio
+      dockerfile: Dockerfile
+    volumes:
+      - minio:/data
+    networks:
+      - fire-control-api
+    env_file:
+      - ../variables/test
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "alias", "ls", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres:
+    name: fire-control-api-test-postgres
+  redis:
+    name: fire-control-api-test-redis
+  minio:
+    name: fire-control-api-test-minio
+
+networks:
+  fire-control-api:
+    name: fire-control-api-test-network
+    driver: bridge

@@ -1,5 +1,6 @@
 import uuid as uid
 
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
@@ -8,11 +9,16 @@ from core.cache.service import CacheService
 from core.database import cruds, schemas
 from clients.postgres import PostgresClient
 
-router = APIRouter(tags=["users"])
+router = APIRouter()
 
 
 @router.post(
-    "/users", response_model=schemas.UserReadSchema, status_code=status.HTTP_201_CREATED
+    "/users",
+    response_model=schemas.UserReadSchema,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {"description": "User could not be created"},
+    },
 )
 def create_user(
     user: schemas.UserCreateSchema, db: Session = Depends(PostgresClient.db)
@@ -34,6 +40,9 @@ def create_user(
     "/users/{user_id}",
     response_model=schemas.UserReadSchema,
     status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
+    },
 )
 def update_user(
     user_id: uid.UUID,
@@ -53,7 +62,13 @@ def update_user(
     return cruds.user_crud.update(db=db, id=user_id, instance=user)
 
 
-@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/users/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
+    },
+)
 def delete_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
 
     db_user = cruds.user_crud.read(db, id=user_id)
@@ -72,6 +87,9 @@ def delete_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
     "/users/{user_id}",
     response_model=schemas.UserReadSchema,
     status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
+    },
 )
 @cache(expire=60, namespace="users")
 def read_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
@@ -90,14 +108,15 @@ def read_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
     "/users",
     response_model=schemas.UserPaginatedResponse,
     status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "Users not found"},
+    },
 )
 @cache(expire=60, namespace="users")
-def read_users(
+def list_users(
     skip: int = 0, limit: int = 10, db: Session = Depends(PostgresClient.db)
 ):
 
-    users = cruds.user_crud.read_all(db, skip=skip, limit=limit)
+    users = cruds.user_crud.return_paginated_response(db=db, skip=skip, limit=limit)
 
-    total = cruds.user_crud.count(db)
-
-    return schemas.UserPaginatedResponse(total=total, items=users)
+    return schemas.UserPaginatedResponse(**users)

@@ -6,9 +6,6 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv(encoding="utf-8")
 
-# class BaseModel(declarative_base()):
-#     pass
-
 
 class PostgresClient:
     _engine_ = None
@@ -36,10 +33,10 @@ class PostgresClient:
                 autocommit=False, autoflush=False, bind=cls._engine_
             )
 
-    # @classmethod
-    # def base(cls):
-    #     cls._start_()
-    #     return cls._base_()
+    @classmethod
+    def base(cls):
+        cls._start_()
+        return cls.Base
 
     @classmethod
     def connect(cls):

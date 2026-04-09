@@ -1,5 +1,5 @@
 from core.database.models.default import DefaultModel
-from core.database.models.roles import Role
+from core.database.enums.roles import Role
 
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship

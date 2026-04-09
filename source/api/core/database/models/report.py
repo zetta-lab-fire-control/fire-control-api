@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 
 from core.database.models.default import DefaultModel
-from core.database.models.incident import IncidentType, IncidentIntensity
+from core.database.enums.incident import IncidentType, IncidentIntensity
 
 
 class Report(DefaultModel):
@@ -16,7 +16,7 @@ class Report(DefaultModel):
         UUID(as_uuid=True), ForeignKey("occurrences.id"), nullable=True
     )
 
-    type = Column(String, nullable=True, default=IncidentType.FIRE.value)
+    type = Column(String, nullable=True, default=IncidentType.FOREST_FIRE.value)
 
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=False)
 
@@ -26,4 +26,6 @@ class Report(DefaultModel):
 
     occurrence = relationship("Occurrence", back_populates="reports")
 
-    media = relationship("ReportMedia", back_populates="report")
+    media = relationship(
+        "MediaReport", back_populates="report", cascade="all, delete-orphan"
+    )
