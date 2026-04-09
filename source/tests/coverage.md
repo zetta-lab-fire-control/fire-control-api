@@ -6,7 +6,7 @@
 | clients/postgres.py                    |       37 |        3 |     92% |
 | core/cache/service.py                  |        9 |        1 |     89% |
 | core/database/cruds/\_\_init\_\_.py    |        6 |        0 |    100% |
-| core/database/cruds/default.py         |       59 |        5 |     92% |
+| core/database/cruds/default.py         |       58 |        5 |     91% |
 | core/database/cruds/media.py           |        6 |        0 |    100% |
 | core/database/cruds/media\_report.py   |        6 |        0 |    100% |
 | core/database/cruds/occurrence.py      |       46 |        1 |     98% |
@@ -17,7 +17,7 @@
 | core/database/enums/roles.py           |        5 |        0 |    100% |
 | core/database/models/\_\_init\_\_.py   |        6 |        0 |    100% |
 | core/database/models/default.py        |       25 |       11 |     56% |
-| core/database/models/media.py          |       14 |        0 |    100% |
+| core/database/models/media.py          |       13 |        0 |    100% |
 | core/database/models/media\_report.py  |       11 |        0 |    100% |
 | core/database/models/occurrence.py     |       17 |        0 |    100% |
 | core/database/models/report.py         |       16 |        0 |    100% |
@@ -26,7 +26,7 @@
 | core/database/schemas/coordinates.py   |        4 |        0 |    100% |
 | core/database/schemas/default.py       |        6 |        0 |    100% |
 | core/database/schemas/media.py         |       30 |        0 |    100% |
-| core/database/schemas/media\_report.py |       18 |        0 |    100% |
+| core/database/schemas/media\_report.py |       17 |        0 |    100% |
 | core/database/schemas/occurrence.py    |       75 |        1 |     99% |
 | core/database/schemas/report.py        |       47 |        1 |     98% |
 | core/database/schemas/user.py          |       34 |        0 |    100% |
@@ -36,8 +36,8 @@
 | routes/\_\_init\_\_.py                 |       15 |        0 |    100% |
 | routes/auth.py                         |       14 |        0 |    100% |
 | routes/health.py                       |        8 |        0 |    100% |
-| routes/media.py                        |       27 |        0 |    100% |
+| routes/media.py                        |       26 |        0 |    100% |
 | routes/occurrence.py                   |       63 |        0 |    100% |
-| routes/report.py                       |       67 |        0 |    100% |
-| routes/user.py                         |       42 |        0 |    100% |
-| **TOTAL**                              |  **889** |   **40** | **96%** |
+| routes/report.py                       |       66 |        0 |    100% |
+| routes/user.py                         |       41 |        0 |    100% |
+| **TOTAL**                              |  **883** |   **40** | **95%** |
