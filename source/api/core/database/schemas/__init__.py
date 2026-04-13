@@ -5,7 +5,7 @@ from core.database.schemas.user import (
     UserListSchema,
     UserLoginSchema,
     UserPaginatedResponse,
-    UserTokenSchema,
+    UserAuthSchema,
 )
 from core.database.schemas.report import (
     ReportRequestSchema,
@@ -45,6 +45,15 @@ from core.database.schemas.media_report import (
 
 from core.database.schemas.default import PaginatedResponse
 
+from core.database.schemas.auth import (
+    TokenSchema,
+    AcessTokenSchema,
+    RefreshTokenSchema,
+    ResetTokenSchema,
+    PasswordRequestSchema,
+    PasswordResetSchema,
+)
+
 __all__ = [
     "UserCreateSchema",
     "UserReadSchema",
@@ -52,7 +61,7 @@ __all__ = [
     "UserListSchema",
     "UserLoginSchema",
     "UserPaginatedResponse",
-    "UserTokenSchema",
+    "UserAuthSchema",
     "ReportRequestSchema",
     "ReportCreateSchema",
     "ReportReadSchema",
@@ -79,4 +88,10 @@ __all__ = [
     "MediaReportListSchema",
     "MediaReportPaginatedResponse",
     "PaginatedResponse",
+    "TokenSchema",
+    "AcessTokenSchema",
+    "RefreshTokenSchema",
+    "PasswordRequestSchema",
+    "PasswordResetSchema",
+    "ResetTokenSchema",
 ]

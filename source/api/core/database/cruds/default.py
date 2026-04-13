@@ -52,6 +52,15 @@ class CRUD[ModelType, CreateSchemaType: BaseModel, UpdateSchemaType: BaseModel]:
 
         return query.first()
 
+    def read_by(self, db: Session, **filters) -> ModelType | None:
+
+        query = db.query(self.model)
+
+        for key, value in filters.items():
+            query = query.filter(getattr(self.model, key) == value)
+
+        return query.first()
+
     def before_update(self, data: dict) -> dict:
 
         return data
