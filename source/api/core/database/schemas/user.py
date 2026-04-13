@@ -59,6 +59,14 @@ class UserLoginSchema(BaseModel):
     password: str = Field(..., description="The password of the user.")
 
 
+class UserTokenSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID = Field(..., description="The ID of the user.")
+
+    role: str = Field(..., description="The role of the user.")
+
+
 class UserListSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

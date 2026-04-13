@@ -5,6 +5,7 @@ from core.database.schemas.user import (
     UserListSchema,
     UserLoginSchema,
     UserPaginatedResponse,
+    UserTokenSchema,
 )
 from core.database.schemas.report import (
     ReportRequestSchema,
@@ -51,6 +52,7 @@ __all__ = [
     "UserListSchema",
     "UserLoginSchema",
     "UserPaginatedResponse",
+    "UserTokenSchema",
     "ReportRequestSchema",
     "ReportCreateSchema",
     "ReportReadSchema",

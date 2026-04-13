@@ -34,6 +34,12 @@ storage = [
     "minio==7.2.20",
 ]
 
+security = [
+    "passlib==1.7.4",
+    "python-jose[cryptography]==3.5.0",
+    "python-multipart==0.0.26",
+]
+
 [dependency-groups]
 
 dev = [

@@ -5,6 +5,11 @@ POSTGRES_PASSWORD=admin-user
 POSTGRES_DB=admin-user
 DATABASE_URL=postgresql://admin-user:admin-user@postgres:5432/admin-user
 
+# Security
+
+ACCESS_TOKEN_EXPIRE_MINUTES=15
+REFRESH_TOKEN_EXPIRE_HOURS=24
+
 # BtFlow API
 
 PYTHONPATH=/api
