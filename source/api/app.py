@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     PostgresClient.connect()
 
     redis = aioredis.from_url(
-        "redis://localhost:6379", encoding="utf8", decode_responses=True
+        "redis://redis:6379", encoding="utf8", decode_responses=True
     )
 
     FastAPICache.init(RedisBackend(redis), prefix="api-cache")

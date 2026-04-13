@@ -1,3 +1,4 @@
+import bcrypt
 import os
 
 from datetime import datetime, timedelta, timezone
@@ -5,7 +6,8 @@ from dotenv import load_dotenv
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+
+# from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from clients.postgres import PostgresClient
@@ -16,29 +18,32 @@ load_dotenv()
 
 
 class Data:
-    SECRET_KEY: str | None = os.getenv("SECRET_KEY")
+    SECRET_KEY: str | None = os.getenv("API_SECRET_KEY")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int | None = (
-        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"),
-        15,
-    )
-    REFRESH_TOKEN_EXPIRE_HOURS: int | None = (
-        os.getenv("REFRESH_TOKEN_EXPIRE_HOURS"),
-        24,
-    )
-    PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    AUTH_SCHEME = OAuth2PasswordBearer(tokenUrl="token")
-    AUTH_SCHEME_OPTIONAL = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
+    REFRESH_TOKEN_EXPIRE_HOURS: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_HOURS", 24))
+    AUTH_SCHEME = OAuth2PasswordBearer(tokenUrl="login")
+    AUTH_SCHEME_OPTIONAL = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 
 class PasswordService:
     def hash_password(self, password: str) -> str:
 
-        return Data.PWD_CONTEXT.hash(password)
+        pwd_bytes = password.encode("utf-8")
+
+        salt = bcrypt.gensalt()
+
+        hashed_bytes = bcrypt.hashpw(pwd_bytes, salt)
+
+        return hashed_bytes.decode("utf-8")
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
 
-        return Data.PWD_CONTEXT.verify(plain_password, hashed_password)
+        plain_bytes = plain_password.encode("utf-8")
+
+        hashed_bytes = hashed_password.encode("utf-8")
+
+        return bcrypt.checkpw(plain_bytes, hashed_bytes)
 
 
 class TokenService:
