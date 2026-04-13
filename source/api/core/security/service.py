@@ -18,11 +18,13 @@ load_dotenv()
 class Data:
     SECRET_KEY: str | None = os.getenv("SECRET_KEY")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int | None = int(
-        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"), 15
+    ACCESS_TOKEN_EXPIRE_MINUTES: int | None = (
+        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"),
+        15,
     )
-    REFRESH_TOKEN_EXPIRE_HOURS: int | None = int(
-        os.getenv("REFRESH_TOKEN_EXPIRE_HOURS"), 24
+    REFRESH_TOKEN_EXPIRE_HOURS: int | None = (
+        os.getenv("REFRESH_TOKEN_EXPIRE_HOURS"),
+        24,
     )
     PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
     AUTH_SCHEME = OAuth2PasswordBearer(tokenUrl="token")
@@ -105,7 +107,7 @@ class AuthenticationService:
     async def get_current_user(
         cls,
         token: str = Depends(Data.AUTH_SCHEME),
-        db: Session = Depends(PostgresClient.get_db),
+        db: Session = Depends(PostgresClient.db),
     ) -> schemas.UserAuthSchema:
 
         token_service = TokenService()
