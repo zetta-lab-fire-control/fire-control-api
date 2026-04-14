@@ -94,6 +94,7 @@ async def refresh_token(
         )
 
     new_access_token = TokenService().create_access_token(data={"sub": str(user.id)})
+
     new_refresh_token = TokenService().create_refresh_token(data={"sub": str(user.id)})
 
     await CacheService.block_token(refresh_token.refresh_token, payload["exp"])
@@ -107,7 +108,6 @@ async def refresh_token(
 
 @router.post(
     "/password-request",
-    response_model=schemas.ResetTokenSchema,
     status_code=status.HTTP_200_OK,
 )
 def request_password(
@@ -120,19 +120,30 @@ def request_password(
 
     user = cruds.user_crud.read_by(db, **filter)
 
-    if user:
-        token_service = TokenService()
-
-        reset_token = token_service.create_reset_token(data={"sub": str(user.id)})
-
     if not user:
-        fake_token = token_service.create_reset_token(data={"sub": "fake_user_id"})
+        return {
+            "message": "If the email is registered, a password reset token has been sent."
+        }
 
-    return (
-        schemas.ResetTokenSchema(reset_token=reset_token)
-        if user
-        else schemas.ResetTokenSchema(reset_token=fake_token)
-    )
+    token_service = TokenService()
+
+    reset_token = token_service.create_reset_token(data={"sub": str(user.id)})
+
+    def send_email(user_email: str, token: str):
+
+        message = {
+            "to": user_email,
+            "subject": "Password Reset Request",
+            "body": f"Use the following token to reset your password: {token}",
+        }
+
+        return f"Email sent to {user_email} with token: {token} successfully. Message: {message}"
+
+    send_email(user.email, reset_token)
+
+    return {
+        "message": "If the email is registered, a password reset token has been sent."
+    }
 
 
 @router.post("/password-reset", status_code=status.HTTP_200_OK)
@@ -145,9 +156,11 @@ async def reset_password(
             detail="Token already used or invalid.",
         )
 
-    token_service = TokenService()
+    # token_service = TokenService()
 
-    payload = token_service.decode_access_token(data.token)
+    # payload = token_service.decode_access_token(data.token)
+
+    payload = TokenService().decode_access_token(data.token)
 
     if not payload or payload.get("type") != "reset":
         raise HTTPException(

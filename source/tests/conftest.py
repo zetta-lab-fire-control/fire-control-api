@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from api.app import app
 from api.clients.postgres import PostgresClient
+from api.core.security.service import TokenService
 
 URL: str | None = os.getenv("DATABASE_URL")
 
@@ -71,17 +72,22 @@ def client(db_session):
 
 
 @pytest.fixture(scope="function")
-def user(client):
+def user_data():
+    return {
+        "firstname": "user",
+        "lastname": "test",
+        "email": f"user_{uuid.uuid4()}@example.com",
+        "telephone": "123456789",
+        "password": "securepassword",
+    }
+
+
+@pytest.fixture(scope="function")
+def user(client, user_data):
 
     response = client.post(
         "/users",
-        json={
-            "firstname": "user",
-            "lastname": "test",
-            "email": f"user_{uuid.uuid4()}@example.com",
-            "telephone": "123456789",
-            "password": "securepassword",
-        },
+        json=user_data,
         headers={},
     )
 
@@ -147,3 +153,32 @@ def occurrence(client):
     )
 
     return response.json()
+
+
+@pytest.fixture(scope="function")
+def user_acess_token(user):
+    access_token = TokenService().create_access_token(data={"sub": user["id"]})
+    return access_token
+
+
+@pytest.fixture(scope="function")
+def user_reset_token(user):
+    reset_token = TokenService().create_reset_token(data={"sub": user["id"]})
+    return reset_token
+
+
+@pytest.fixture(scope="function")
+def user_refresh_token(user):
+    refresh_token = TokenService().create_refresh_token(data={"sub": user["id"]})
+    return refresh_token
+
+
+@pytest.fixture(scope="function")
+def auth_client(client, user_acess_token):
+    client.headers = {**client.headers, "Authorization": f"Bearer {user_acess_token}"}
+    return client
+
+
+@pytest.fixture(scope="function")
+def user_credentials(user_data):
+    return {"username": user_data["email"], "password": user_data["password"]}
