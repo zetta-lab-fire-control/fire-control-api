@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from core.cache.service import CacheService
 from core.database import cruds, schemas
+from core.security.service import AuthorizationService
 from clients.postgres import PostgresClient
 
 router = APIRouter()
@@ -16,9 +17,6 @@ router = APIRouter()
     "/users",
     response_model=schemas.UserReadSchema,
     status_code=status.HTTP_201_CREATED,
-    responses={
-        status.HTTP_400_BAD_REQUEST: {"description": "User could not be created"},
-    },
 )
 def create_user(
     user: schemas.UserCreateSchema, db: Session = Depends(PostgresClient.db)
@@ -40,9 +38,7 @@ def create_user(
     "/users/{user_id}",
     response_model=schemas.UserReadSchema,
     status_code=status.HTTP_200_OK,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
-    },
+    dependencies=[Depends(AuthorizationService.get_user_instance_owner_or_admin)],
 )
 def update_user(
     user_id: uid.UUID,
@@ -50,12 +46,12 @@ def update_user(
     db: Session = Depends(PostgresClient.db),
 ):
 
-    db_user = cruds.user_crud.read(db, id=user_id)
+    # db_user = cruds.user_crud.read(db, id=user_id)
 
-    if not db_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
+    # if not db_user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+    #     )
 
     CacheService.clear_cache(namespace="users")
 
@@ -65,18 +61,16 @@ def update_user(
 @router.delete(
     "/users/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
-    },
+    dependencies=[Depends(AuthorizationService.get_user_instance_owner_or_admin)],
 )
 def delete_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
 
-    db_user = cruds.user_crud.read(db, id=user_id)
+    # db_user = cruds.user_crud.read(db, id=user_id)
 
-    if not db_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
+    # if not db_user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+    #     )
 
     cruds.user_crud.delete(db=db, id=user_id)
 
@@ -87,19 +81,17 @@ def delete_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
     "/users/{user_id}",
     response_model=schemas.UserReadSchema,
     status_code=status.HTTP_200_OK,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
-    },
+    dependencies=[Depends(AuthorizationService.get_user_instance_owner_or_admin)],
 )
 @cache(expire=60, namespace="users")
 def read_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
 
     db_user = cruds.user_crud.read(db, id=user_id)
 
-    if not db_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
+    # if not db_user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+    #     )
 
     return db_user
 
@@ -108,9 +100,7 @@ def read_user(user_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
     "/users",
     response_model=schemas.UserPaginatedResponse,
     status_code=status.HTTP_200_OK,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"description": "Users not found"},
-    },
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
 )
 @cache(expire=60, namespace="users")
 def list_users(

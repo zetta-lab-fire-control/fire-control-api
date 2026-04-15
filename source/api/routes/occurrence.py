@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid as uid
 
 from datetime import datetime
@@ -11,6 +12,7 @@ from core.database import cruds, schemas
 from core.cache.service import CacheService
 from core.database.enums.incident import IncidentStatus
 from core.database.services.ocurrence import OccurrenceService
+from core.security.service import AuthorizationService
 
 
 router = APIRouter()
@@ -20,6 +22,7 @@ router = APIRouter()
     "/occurrences",
     response_model=schemas.OccurrenceReadSchema,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
 )
 def create_occurrence(
     occurrence: schemas.OccurrenceCreateSchema, db: Session = Depends(PostgresClient.db)
@@ -42,6 +45,7 @@ def create_occurrence(
     "/occurrences/{occurrence_id}",
     response_model=schemas.OccurrenceReadSchema,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
 )
 def update_occurrence(
     occurrence_id: uid.UUID,
@@ -61,7 +65,11 @@ def update_occurrence(
     return cruds.occurrence_crud.update(db=db, id=occurrence_id, instance=occurrence)
 
 
-@router.delete("/occurrences/{occurrence_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/occurrences/{occurrence_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
+)
 def delete_occurrence(
     occurrence_id: uid.UUID, db: Session = Depends(PostgresClient.db)
 ):
@@ -103,8 +111,8 @@ def read_occurrence(occurrence_id: uid.UUID, db: Session = Depends(PostgresClien
 )
 @cache(expire=180, namespace="occurrences")
 def list_occurrences(
-    city: str = None,
-    status: IncidentStatus = None,
+    status: Optional[IncidentStatus] = None,
+    city: Optional[str] = None,
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(PostgresClient.db),
@@ -144,6 +152,7 @@ def get_history(
     "/occurrences/indicators/operational",
     response_model=schemas.OccurrenceOperationalIndicatorsSchema,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
 )
 @cache(expire=60, namespace="occurrences")
 def get_operational_indicators(

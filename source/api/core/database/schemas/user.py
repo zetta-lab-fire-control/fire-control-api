@@ -4,6 +4,8 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from core.database.enums.roles import Role
+
 from core.database.schemas.default import PaginatedResponse
 
 
@@ -19,6 +21,10 @@ class UserCreateSchema(BaseModel):
     telephone: str = Field(..., description="The telephone number of the user.")
 
     password: str = Field(..., description="The password of the user.")
+
+
+class AdminCreateSchema(UserCreateSchema):
+    role: Role = Field(..., description="The role of the user.")
 
 
 class UserReadSchema(BaseModel):
@@ -57,6 +63,14 @@ class UserLoginSchema(BaseModel):
     email: str = Field(..., description="The email of the user.")
 
     password: str = Field(..., description="The password of the user.")
+
+
+class UserAuthSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID = Field(..., description="The ID of the user.")
+
+    role: Role = Field(..., description="The role of the user.")
 
 
 class UserListSchema(BaseModel):
