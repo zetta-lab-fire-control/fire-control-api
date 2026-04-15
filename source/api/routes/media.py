@@ -2,13 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
 
-from core.database import cruds, schemas
 
 from clients.postgres import PostgresClient
 
-from core.storage.service import MinioService
+from core.database import cruds, schemas
 
 from core.database.models.media import Media
+
+from core.security.service import AuthenticationService
+
+from core.storage.service import MinioService
 
 
 router = APIRouter()
@@ -18,6 +21,7 @@ router = APIRouter()
     "/media",
     response_model=schemas.MediaUploadResponseSchema,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(AuthenticationService.get_current_user)],
 )
 def create_media(
     media: schemas.MediaCreateSchema, db: Session = Depends(PostgresClient.db)

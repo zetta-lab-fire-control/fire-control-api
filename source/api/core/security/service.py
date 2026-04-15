@@ -6,13 +6,14 @@ from dotenv import load_dotenv
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-
-# from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from clients.postgres import PostgresClient
-from core.database import cruds, schemas
 from core.cache.service import CacheService
+from core.database import cruds, schemas
+from core.database.enums.roles import Role
+from core.database.models.report import Report
+
 
 load_dotenv()
 
@@ -141,3 +142,86 @@ class AuthenticationService:
             raise await cls.credentials_exception()
 
         return schemas.UserAuthSchema(id=user.id, role=user.role)
+
+
+class AuthorizationService:
+    @classmethod
+    async def authorization_exception(cls):
+
+        return HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to perform this action",
+        )
+
+    @classmethod
+    async def instance_not_found_exception(cls, resource_name: str):
+
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"{resource_name} not found",
+        )
+
+    @classmethod
+    async def get_admin_or_firefighter(
+        cls,
+        current_user: schemas.UserAuthSchema = Depends(
+            AuthenticationService.get_current_user
+        ),
+    ) -> schemas.UserAuthSchema:
+
+        authorized_roles = [Role.ADMIN.value, Role.FIREFIGHTER.value]
+
+        user_role = current_user.role
+
+        is_admin_or_firefighter = [
+            user_role.lower() == role.lower() for role in authorized_roles
+        ]
+
+        is_authorized = any(is_admin_or_firefighter)
+
+        if not is_authorized:
+            raise await cls.authorization_exception()
+
+        return current_user
+
+    @classmethod
+    async def get_user_instance_owner_or_admin(
+        cls,
+        user_id: str,
+        current_user: schemas.UserAuthSchema = Depends(
+            AuthenticationService.get_current_user
+        ),
+    ) -> schemas.UserAuthSchema:
+
+        is_owner = str(user_id) == str(current_user.id)
+
+        is_admin = current_user.role.lower() == Role.ADMIN.value.lower()
+
+        if not is_owner and not is_admin:
+            raise await cls.authorization_exception()
+
+        return current_user
+
+    @classmethod
+    async def get_report_instance_owner_or_admin(
+        cls,
+        report_id: str,
+        current_user: schemas.UserAuthSchema = Depends(
+            AuthenticationService.get_current_user
+        ),
+        db: Session = Depends(PostgresClient.db),
+    ) -> schemas.UserAuthSchema:
+
+        report: Report | None = cruds.report_crud.read(db, id=report_id)
+
+        if report is None:
+            raise await cls.instance_not_found_exception("Report")
+
+        is_owner = str(report.user_id) == str(current_user.id)
+
+        is_admin = current_user.role.upper() == Role.ADMIN.value
+
+        if not is_owner and not is_admin:
+            raise await cls.authorization_exception()
+
+        return current_user

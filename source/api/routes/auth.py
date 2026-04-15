@@ -156,10 +156,6 @@ async def reset_password(
             detail="Token already used or invalid.",
         )
 
-    # token_service = TokenService()
-
-    # payload = token_service.decode_access_token(data.token)
-
     payload = TokenService().decode_access_token(data.token)
 
     if not payload or payload.get("type") != "reset":

@@ -2,6 +2,7 @@ import uuid as uid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_cache.decorator import cache
+from core.database.models.report import Report
 from sqlalchemy.orm import Session
 
 
@@ -10,6 +11,7 @@ from core.database.schemas.coordinates import CoordinateSchema
 from core.database.enums.incident import IncidentStatus
 from core.database.models.occurrence import Occurrence
 from core.database import cruds, schemas
+from core.security.service import AuthenticationService, AuthorizationService
 from clients.postgres import PostgresClient
 
 router = APIRouter()
@@ -19,6 +21,7 @@ router = APIRouter()
     "/reports",
     response_model=schemas.ReportReadSchema,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(AuthenticationService.get_current_user)],
 )
 def create_report(
     report: schemas.ReportRequestSchema,
@@ -97,6 +100,7 @@ def create_report(
     "/reports/{report_id}",
     response_model=schemas.ReportReadSchema,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
 )
 def update_report(
     report_id: uid.UUID,
@@ -116,8 +120,15 @@ def update_report(
     return cruds.report_crud.update(db=db, id=report_id, instance=report)
 
 
-@router.delete("/reports/{report_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_report(report_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
+@router.delete(
+    "/reports/{report_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
+)
+def delete_report(
+    report_id: uid.UUID,
+    db: Session = Depends(PostgresClient.db),
+):
 
     db_report = cruds.report_crud.read(db, id=report_id)
 
@@ -135,39 +146,21 @@ def delete_report(report_id: uid.UUID, db: Session = Depends(PostgresClient.db))
     "/reports/{report_id}",
     response_model=schemas.ReportReadSchema,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_report_instance_owner_or_admin)],
 )
 @cache(expire=60, namespace="reports")
 def read_report(report_id: uid.UUID, db: Session = Depends(PostgresClient.db)):
 
-    db_report = cruds.report_crud.read(db, id=report_id)
-
-    if not db_report:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Report not found"
-        )
+    db_report: Report = cruds.report_crud.read(db, id=report_id)
 
     return schemas.ReportReadSchema.model_validate(db_report)
-
-
-@router.get(
-    "/reports",
-    response_model=schemas.ReportPaginatedResponse,
-    status_code=status.HTTP_200_OK,
-)
-@cache(expire=60, namespace="reports")
-def list_reports(
-    skip: int = 0, limit: int = 10, db: Session = Depends(PostgresClient.db)
-):
-
-    reports = cruds.report_crud.return_paginated_response(db, skip=skip, limit=limit)
-
-    return schemas.ReportPaginatedResponse(**reports)
 
 
 @router.get(
     "/reports/{report_id}/media",
     response_model=schemas.MediaReportPaginatedResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_report_instance_owner_or_admin)],
 )
 def list_report_media(
     report_id: uid.UUID,
@@ -183,3 +176,19 @@ def list_report_media(
     )
 
     return schemas.MediaReportPaginatedResponse(**media_reports)
+
+
+@router.get(
+    "/reports",
+    response_model=schemas.ReportPaginatedResponse,
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(AuthorizationService.get_admin_or_firefighter)],
+)
+@cache(expire=60, namespace="reports")
+def list_reports(
+    skip: int = 0, limit: int = 10, db: Session = Depends(PostgresClient.db)
+):
+
+    reports = cruds.report_crud.return_paginated_response(db, skip=skip, limit=limit)
+
+    return schemas.ReportPaginatedResponse(**reports)
