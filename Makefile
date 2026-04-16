@@ -21,21 +21,11 @@ dev-restart-service:
 	docker compose -p $(NAME)-dev -f $(DEV_FILE) build --no-cache $(SERVICE)
 	docker compose -p $(NAME)-dev -f $(DEV_FILE) restart $(SERVICE)
 
-test-build:
-	docker compose -p $(NAME)-test -f $(TEST_FILE) build --no-cache --build-arg TEST=true
-
-test-start:
-	docker compose -p $(NAME)-test -f $(TEST_FILE) up --abort-on-container-exit --exit-code-from api
-
-test-stop:
-	docker compose -p $(NAME)-test -f $(TEST_FILE) down -v
+test:
+	docker compose -p $(NAME)-test -f $(TEST_FILE) run --rm api pytest --cov=/api --cov-report=term-missing --cov-report=markdown:/tests/coverage.md /tests -x -v
 
 test-rm:
 	docker compose -p $(NAME)-test -f $(TEST_FILE) down --rmi all -v
-
-test-restart: test-stop test-rm test-build test-start
-
-test: test-stop test-start
 
 prod-build:
 	docker compose -p $(NAME)-prod -f $(PROD_FILE) build --no-cache

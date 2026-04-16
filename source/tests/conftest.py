@@ -7,4 +7,5 @@ pytest_plugins = [
     "tests.fixtures.db_media",
     "tests.fixtures.db_report",
     "tests.fixtures.db_occurrence",
+    "tests.fixtures.gc",
 ]

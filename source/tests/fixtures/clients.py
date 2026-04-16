@@ -19,10 +19,13 @@ def client(db_session):
 
     app.dependency_overrides[PostgresClient.db] = _get_db_session_
 
-    with TestClient(app) as client:
-        yield client
+    try:
+        with TestClient(app) as client:
+            yield client
 
-    app.dependency_overrides.clear()
+    finally:
+        # app.dependency_overrides.clear()
+        app.dependency_overrides = {}
 
 
 @pytest.fixture(scope="function")
@@ -51,6 +54,10 @@ def mocked_admin_client(client, admin):
         mock_get_current_user
     )
 
-    yield client
+    try:
+        yield client
 
-    app.dependency_overrides.pop(AuthenticationService.get_current_user, None)
+    finally:
+        app.dependency_overrides.pop(AuthenticationService.get_current_user, None)
+        # app.dependency_overrides = {}
+        # app.dependency_overrides.clear()
