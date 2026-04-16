@@ -3,6 +3,7 @@ import pytest
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.pool import NullPool
 
 from clients.postgres import PostgresClient
 
@@ -43,10 +44,14 @@ def db_session(engine):
 
     session = local()
 
-    yield session
+    try:
+        yield session
 
-    session.close()
+    finally:
+        session.expunge_all()
 
-    transaction.rollback()
+        session.close()
 
-    connection.close()
+        transaction.rollback()
+
+        connection.close()

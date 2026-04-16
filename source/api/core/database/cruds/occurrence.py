@@ -9,6 +9,9 @@ from core.database.schemas import OccurrenceCreateSchema, OccurrenceUpdateSchema
 from core.database.schemas.coordinates import CoordinateSchema
 from core.database.models import Occurrence
 from core.database.enums.incident import IncidentStatus, IncidentIntensity
+from core.database.services.location import LocationValidator
+
+db_validator = LocationValidator()
 
 
 class OccurrenceCRUD(CRUD[Occurrence, OccurrenceCreateSchema, OccurrenceUpdateSchema]):
@@ -27,12 +30,23 @@ class OccurrenceCRUD(CRUD[Occurrence, OccurrenceCreateSchema, OccurrenceUpdateSc
 
             data["location"] = f"SRID=4326;POINT({lon} {lat})"
 
+            city_name: str | None = db_validator.get_city_name(
+                latitude=lat, longitude=lon
+            )
+
+            if city_name:
+                data["city"] = city_name
+
+            else:
+                data["city"] = None
+
         return data
 
     def return_occurrence_within_radius(
         self, db: Session, point: CoordinateSchema, radius: float = 400
     ) -> Occurrence | None:
 
+        # TODO
         # implementar lógica de escolha da ocorrência mais adequada, por enquanto retorna todas as ocorrências dentro do raio
 
         target_point = func.ST_SetSRID(

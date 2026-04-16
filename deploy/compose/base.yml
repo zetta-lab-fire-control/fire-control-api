@@ -1,0 +1,106 @@
+services:
+  app:
+    restart: unless-stopped
+    build:
+      context: ../../
+      dockerfile: deploy/containers/fastapi/Dockerfile
+      args:
+        - TEST=false
+    volumes:
+      - ../../source/api:/api
+    networks:
+      - fire-control-api
+    links:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+      seeder:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  postgres:
+    build:
+      context: ../containers/postgres
+      dockerfile: Dockerfile
+    networks:
+      - fire-control-api
+    command: ["postgres", "-c", "listen_addresses=*"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  redis:
+    restart: unless-stopped
+    build:
+      context: ../containers/redis
+      dockerfile: Dockerfile
+    volumes:
+      - redis:/data
+    networks:
+      - fire-control-api
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    build:
+      context: ../containers/minio
+      dockerfile: Dockerfile
+    volumes:
+      - minio:/data
+    networks:
+      - fire-control-api
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "alias", "ls", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ../containers/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8000:443"
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - fire-control-api
+
+  seeder:
+    build:
+      context: ../../
+      dockerfile: deploy/containers/fastapi/Dockerfile
+      args:
+        - TEST=true
+    volumes:
+      - ../../source/database:/database
+    networks:
+      - fire-control-api
+    command: python /database/seeders/seed_ibge.py
+    depends_on:
+      postgres:
+        condition: service_healthy

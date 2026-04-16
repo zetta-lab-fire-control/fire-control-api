@@ -9,7 +9,7 @@
 | core/database/cruds/default.py         |       63 |        5 |     92% |
 | core/database/cruds/media.py           |        6 |        0 |    100% |
 | core/database/cruds/media\_report.py   |        6 |        0 |    100% |
-| core/database/cruds/occurrence.py      |       46 |        1 |     98% |
+| core/database/cruds/occurrence.py      |       52 |        2 |     96% |
 | core/database/cruds/report.py          |       12 |        0 |    100% |
 | core/database/cruds/user.py            |       22 |        0 |    100% |
 | core/database/enums/incident.py        |       13 |        0 |    100% |
@@ -24,16 +24,17 @@
 | core/database/models/user.py           |       14 |        0 |    100% |
 | core/database/schemas/\_\_init\_\_.py  |        8 |        0 |    100% |
 | core/database/schemas/auth.py          |       22 |        0 |    100% |
-| core/database/schemas/coordinates.py   |        4 |        0 |    100% |
+| core/database/schemas/coordinates.py   |       18 |        1 |     94% |
 | core/database/schemas/default.py       |        6 |        0 |    100% |
 | core/database/schemas/media.py         |       30 |        0 |    100% |
 | core/database/schemas/media\_report.py |       17 |        0 |    100% |
 | core/database/schemas/occurrence.py    |       75 |        1 |     99% |
 | core/database/schemas/report.py        |       47 |        1 |     98% |
 | core/database/schemas/user.py          |       41 |        0 |    100% |
+| core/database/services/location.py     |       21 |        6 |     71% |
 | core/database/services/ocurrence.py    |       24 |        5 |     79% |
 | core/security/service.py               |      111 |       14 |     87% |
-| core/storage/service.py                |       25 |        6 |     76% |
+| core/storage/service.py                |       25 |        7 |     72% |
 | docs.py                                |       21 |        6 |     71% |
 | routes/\_\_init\_\_.py                 |       15 |        0 |    100% |
 | routes/auth.py                         |       68 |        0 |    100% |
@@ -42,4 +43,4 @@
 | routes/occurrence.py                   |       65 |        0 |    100% |
 | routes/report.py                       |       66 |        0 |    100% |
 | routes/user.py                         |       34 |        0 |    100% |
-| **TOTAL**                              | **1101** |   **54** | **95%** |
+| **TOTAL**                              | **1142** |   **63** | **94%** |

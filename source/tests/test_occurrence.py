@@ -10,7 +10,7 @@ def test_create_occurrence(occurrence):
 def test_create_occurrence_return_not_db_occurrence(mocked_admin_client):
 
     occurrence = {
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
         "status": "pending_confirmation",

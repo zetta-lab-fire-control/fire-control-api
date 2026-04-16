@@ -1,117 +1,56 @@
 services:
   app:
-    container_name: fire-control-api-dev-app
-    build:
-      context: ../../
-      dockerfile: deploy/containers/fastapi/Dockerfile
-    volumes:
-      - ../../source/api:/api
+    container_name: fire-control-api-dev-api
+    extends:
+      file: base.yml
+      service: app
     env_file:
       - ../variables/dev
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - fire-control-api
-    links:
-      - postgres
-    restart: unless-stopped
     command: >
       uvicorn app:app
       --host 0.0.0.0
       --port 5000
       --reload
       --reload-dir /api
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
 
   postgres:
     container_name: fire-control-api-dev-postgres
-    restart: unless-stopped
-    build:
-      context: ../containers/postgres
-      dockerfile: Dockerfile
+    extends:
+      file: base.yml
+      service: postgres
     volumes:
       - ../containers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres:/var/lib/postgresql
     env_file:
       - ../variables/dev
-    command: ["postgres", "-c", "listen_addresses=*"]
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "pg_isready",
-          "-U",
-          "$$POSTGRES_USER",
-          "-d",
-          "$$POSTGRES_DB",
-          "-h",
-          "localhost",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-    networks:
-      - fire-control-api
 
   redis:
     container_name: fire-control-api-dev-redis
-    restart: unless-stopped
-    build:
-      context: ../containers/redis
-      dockerfile: Dockerfile
-    volumes:
-      - redis:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    networks:
-      - fire-control-api
+    extends:
+      file: base.yml
+      service: redis
 
   minio:
     container_name: fire-control-api-dev-minio
-    restart: unless-stopped
-    build:
-      context: ../containers/minio
-      dockerfile: Dockerfile
-    volumes:
-      - minio:/data
-    command: server /data --console-address ":9001"
+    extends:
+      file: base.yml
+      service: minio
     env_file:
       - ../variables/dev
-    networks:
-      - fire-control-api
-    healthcheck:
-      test: ["CMD", "mc", "alias", "ls", "local"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   nginx:
     container_name: fire-control-api-dev-nginx
-    restart: unless-stopped
-    build:
-      context: ../containers/nginx
-      dockerfile: Dockerfile
-    ports:
-      - "8000:443"
-    depends_on:
-      app:
-        condition: service_healthy
-    networks:
-      - fire-control-api
+    extends:
+      file: base.yml
+      service: nginx
+
+  seeder:
+    container_name: fire-control-api-dev-seeder
+    extends:
+      file: base.yml
+      service: seeder
+    env_file:
+      - ../variables/dev
 
 volumes:
   postgres:

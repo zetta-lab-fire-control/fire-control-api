@@ -40,7 +40,7 @@ def media_data():
 def report_data(user):
     return {
         "user_id": user["id"],
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
     }
@@ -49,7 +49,7 @@ def report_data(user):
 @pytest.fixture(scope="function")
 def occurrence_data():
     return {
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
         "status": "pending_confirmation",

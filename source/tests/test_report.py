@@ -17,7 +17,7 @@ def test_create_report_return_not_db_occurrence(
 
     report = {
         "user_id": user["id"],
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
     }
@@ -48,7 +48,7 @@ def test_create_report_return_not_db_report(
 
     report = {
         "user_id": user["id"],
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
     }
@@ -74,7 +74,7 @@ def test_create_report_return_not_db_media(
 
     report = {
         "user_id": user["id"],
-        "location": {"longitude": 0.0, "latitude": 0.0},
+        "location": {"longitude": -44.990464, "latitude": -21.246771},
         "type": "forest_fire",
         "intensity": "high",
     }
