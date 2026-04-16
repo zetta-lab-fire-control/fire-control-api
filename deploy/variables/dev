@@ -1,9 +1,9 @@
 # Database
 
-POSTGRES_USER=admin-user
-POSTGRES_PASSWORD=admin-user
-POSTGRES_DB=admin-user
-DATABASE_URL=postgresql://admin-user:admin-user@postgres:5432/admin-user
+POSTGRES_USER=fire_control_api
+POSTGRES_PASSWORD=fire_control_api
+POSTGRES_DB=fire_control_api
+DATABASE_URL=postgresql://fire_control_api:fire_control_api@postgres:5432/fire_control_api
 
 # Security
 
@@ -15,7 +15,7 @@ REFRESH_TOKEN_EXPIRE_HOURS=24
 PYTHONPATH=/api
 UVICORN_RELOAD=true
 API_BASE_URL=http://api:5000
-API_SECRET_KEY=admin-user
+API_SECRET_KEY=fire_control_api
 
 # Redis
 
@@ -25,5 +25,5 @@ REDIS_BACKEND_URL=redis://redis:6379/1
 # MinIO
 
 MINIO_URL=minio:9000
-MINIO_ROOT_USER=admin-user
-MINIO_ROOT_PASSWORD=admin-user
+MINIO_ROOT_USER=fire_control_api
+MINIO_ROOT_PASSWORD=fire_control_api

@@ -1,21 +1,22 @@
 # Database
 
-POSTGRES_USER=fire_control_api_test
-POSTGRES_PASSWORD=fire_control_api_test
-POSTGRES_DB=fire_control_api_test
-DATABASE_URL=postgresql://fire_control_api_test:fire_control_api_test@postgres:5432/fire_control_api_test
+POSTGRES_USER=fire_control_api
+POSTGRES_PASSWORD=fire_control_api
+POSTGRES_DB=fire_control_api
+DATABASE_URL=postgresql://fire_control_api:fire_control_api@postgres:5432/fire_control_api
 
 # Security
 
 ACCESS_TOKEN_EXPIRE_MINUTES=15
 REFRESH_TOKEN_EXPIRE_HOURS=24
 
-# BtFlow API
+# API
 
 PYTHONPATH=/api
 UVICORN_RELOAD=true
 API_BASE_URL=http://api:5000
-API_SECRET_KEY=fire_control_api_test
+API_SECRET_KEY=fire_control_api
+TEST=true
 
 # Redis
 
@@ -25,5 +26,5 @@ REDIS_BACKEND_URL=redis://redis:6379/1
 # MinIO
 
 MINIO_URL=minio:9000
-MINIO_ROOT_USER=fire_control_api_test
-MINIO_ROOT_PASSWORD=fire_control_api_test
+MINIO_ROOT_USER=fire_control_api
+MINIO_ROOT_PASSWORD=fire_control_api
