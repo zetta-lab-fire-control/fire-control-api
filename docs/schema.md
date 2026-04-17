@@ -38,7 +38,6 @@ erDiagram
         datetime resolved_at
         datetime created_at
         string resolved_by
-        string weather_conditions_yesterday
     }
 
     REPORTS {
