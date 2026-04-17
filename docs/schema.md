@@ -29,6 +29,9 @@ erDiagram
         enum type "FOREST_FIRE, URBAN_FIRE, OTHER"
         enum intensity "LOW, HIGH, MEDIUM"
         enum status "QUEUED, VALIDATED, EXECUTING, RESOLVED, INVALIDATED"
+        enum ignition_cause "NATURAL, ANTHROPOGENIC, UNKNOWN"
+        enum land_cover "FORESTLAND, NON_FOREST_NATURAL_FORMATION, FARMING, URBAN_AREA"
+        decimal burned_area_ha
         datetime resolved_at
         datetime created_at
         string resolved_by
