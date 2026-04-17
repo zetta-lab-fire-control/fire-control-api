@@ -56,7 +56,7 @@ erDiagram
     }
 
     WEATHER_ZONE {
-        name
+        string name
         geometry "polygon"
     }
 
