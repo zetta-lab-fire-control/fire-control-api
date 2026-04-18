@@ -24,7 +24,11 @@ class UserCreateSchema(BaseModel):
 
 
 class AdminCreateSchema(UserCreateSchema):
-    role: Role = Field(..., description="The role of the user.")
+    role: Role = Field(default=Role.ADMIN, description="The role of the user.")
+
+
+class FirefighterCreateSchema(UserCreateSchema):
+    role: Role = Field(default=Role.FIREFIGHTER, description="The role of the user.")
 
 
 class UserReadSchema(BaseModel):
