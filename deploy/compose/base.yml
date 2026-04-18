@@ -97,10 +97,13 @@ services:
       args:
         - TEST=true
     volumes:
+      - ../../source/api:/api
       - ../../source/database:/database
+    environment:
+      - PYTHONPATH=/api:/database
     networks:
       - fire-control-api
-    command: python /database/seeders/seed_ibge.py
+    command: sh -c "python /database/seeders/seed_ibge.py && python /database/seeders/seed_users.py"
     depends_on:
       postgres:
         condition: service_healthy
