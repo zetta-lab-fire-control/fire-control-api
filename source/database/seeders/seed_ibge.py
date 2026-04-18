@@ -5,7 +5,6 @@ from sqlalchemy import create_engine, TextClause, text
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 GEOJSON_URL = "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-31-mun.json"
-
 IS_TEST_ENV = os.getenv("TEST", "false").lower() == "true"
 
 LAVRAS_REGION_IBGE_CODES = {

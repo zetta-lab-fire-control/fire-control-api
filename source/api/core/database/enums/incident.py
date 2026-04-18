@@ -17,3 +17,22 @@ class IncidentStatus(StrEnum):
     INVALIDATED = "invalidated"
     VALIDATED = "validated"
     RESOLVED = "resolved"
+
+
+class IncidentResolution(StrEnum):
+    EXTINGUISHED = "extinguished"
+    HUMAN_INTERVENTION = "human_intervention"
+
+
+class IncidentIgnitionCause(StrEnum):
+    NATURAL = "natural"
+    HUMAN = "human"
+    UNKNOWN = "unknown"
+
+
+class IncidentLandCover(StrEnum):
+    FARMING = "farming"
+    FOREST = "forest"
+    NATURAL = "natural"
+    URBAN = "urban"
+    UNKNOWN = "unknown"

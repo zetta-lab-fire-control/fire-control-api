@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime
+from sqlalchemy import Column, ForeignKey, String, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
@@ -9,6 +9,8 @@ from core.database.enums.incident import (
     IncidentType,
     IncidentIntensity,
     IncidentStatus,
+    IncidentIgnitionCause,
+    IncidentLandCover,
 )
 
 
@@ -32,3 +34,11 @@ class Occurrence(DefaultModel):
     reports = relationship("Report", back_populates="occurrence")
 
     users = relationship("User", back_populates="occurrences")
+
+    ignition_cause = Column(
+        String, nullable=True, default=IncidentIgnitionCause.UNKNOWN.value
+    )
+
+    land_cover = Column(String, nullable=True, default=IncidentLandCover.UNKNOWN.value)
+
+    burned_area = Column(Float, nullable=True, default=0.0)

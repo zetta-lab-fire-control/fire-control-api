@@ -90,3 +90,38 @@ def test_list_users(mocked_admin_client):
     response = mocked_admin_client.get("/users")
 
     assert response.status_code == 200
+
+
+def test_create_firefighter(mocked_admin_client):
+
+    firefighter_data = {
+        "firstname": "firefighter",
+        "lastname": "test",
+        "email": "firefighter@example.com",
+        "telephone": "123456789",
+        "password": "securepassword",
+    }
+
+    response = mocked_admin_client.post("/firefighters", json=firefighter_data)
+
+    assert response.status_code == 201
+
+
+def test_create_firefighter_returns_400(mocked_admin_client):
+
+    firefighter_data = {
+        "firstname": "firefighter",
+        "lastname": "test",
+        "email": "firefighter@example.com",
+        "telephone": "123456789",
+        "password": "securepassword",
+    }
+
+    mock_target = "api.routes.user.cruds.user_crud.create"
+
+    with patch(mock_target, return_value=None):
+        response = mocked_admin_client.post("/firefighters", json=firefighter_data)
+
+    assert response.status_code == 400
+
+    assert response.json() == {"detail": "User could not be created"}

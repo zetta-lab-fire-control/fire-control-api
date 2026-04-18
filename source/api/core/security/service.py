@@ -162,6 +162,19 @@ class AuthorizationService:
         )
 
     @classmethod
+    async def get_admin(
+        cls,
+        current_user: schemas.UserAuthSchema = Depends(
+            AuthenticationService.get_current_user
+        ),
+    ) -> schemas.UserAuthSchema:
+
+        if current_user.role.lower() != Role.ADMIN.value.lower():
+            raise await cls.authorization_exception()
+
+        return current_user
+
+    @classmethod
     async def get_admin_or_firefighter(
         cls,
         current_user: schemas.UserAuthSchema = Depends(
