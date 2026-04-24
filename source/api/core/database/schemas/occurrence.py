@@ -14,6 +14,8 @@ from core.database.enums.incident import (
     IncidentType,
     IncidentIntensity,
     IncidentStatus,
+    IncidentIgnitionCause,
+    IncidentLandCover,
 )
 
 
@@ -46,6 +48,18 @@ class OccurrenceReadSchema(BaseModel):
 
     intensity: IncidentIntensity = Field(
         ..., description="The intensity of the occurrence."
+    )
+
+    ignition_cause: IncidentIgnitionCause | None = Field(
+        None, description="The cause of ignition for the occurrence."
+    )
+
+    land_cover: IncidentLandCover | None = Field(
+        None, description="The land cover type for the occurrence."
+    )
+
+    burned_area: float | None = Field(
+        None, description="The burned area in hectares for the occurrence."
     )
 
     status: IncidentStatus = Field(..., description="The status of the occurrence.")
@@ -94,6 +108,18 @@ class OccurrenceUpdateSchema(BaseModel):
 
     intensity: Optional[IncidentIntensity] = Field(
         None, description="The intensity of the occurrence."
+    )
+
+    ignition_cause: Optional[IncidentIgnitionCause] = Field(
+        None, description="The cause of ignition for the occurrence."
+    )
+
+    land_cover: Optional[IncidentLandCover] = Field(
+        None, description="The land cover type for the occurrence."
+    )
+
+    burned_area: Optional[float] = Field(
+        None, description="The burned area in hectares for the occurrence."
     )
 
     status: Optional[IncidentStatus] = Field(
