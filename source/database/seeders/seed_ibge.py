@@ -3,17 +3,13 @@ import os
 import requests
 from sqlalchemy import create_engine, TextClause, text
 
+from registry.mg_cities import mg_cities
+from registry.north_mg_cities import north_mg_cities
+from registry.test_mg_cities import LAVRAS_REGION_IBGE_CODES
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 GEOJSON_URL = "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-31-mun.json"
 IS_TEST_ENV = os.getenv("TEST", "false").lower() == "true"
-
-LAVRAS_REGION_IBGE_CODES = {
-    "3138203",  # Lavras
-    "3130408",  # Ijaci
-    "3154804",  # Ribeirão Vermelho
-    "3144607",  # Nepomuceno
-    "3138708",  # Luminárias
-}
 
 
 def seed_mg_cities_data():
@@ -31,6 +27,23 @@ def seed_mg_cities_data():
     engine = create_engine(DATABASE_URL)
 
     count_inserted = 0
+
+    target_cities = {
+        city_code
+        for city_code, city_name in mg_cities.items()
+        if city_name in north_mg_cities.values()
+    }
+
+    not_encountered = {
+        city_name
+        for city_name in north_mg_cities.values()
+        if city_name not in mg_cities.values()
+    }
+
+    print(f"Target cities count: {len(target_cities)}")
+    print(
+        f"Not encountered cities count: {len(not_encountered)}. IBGE codes: {not_encountered}"
+    )
 
     with engine.begin() as conn:
         create_table: TextClause = text("""
@@ -57,6 +70,9 @@ def seed_mg_cities_data():
             geometry_json = json.dumps(feature["geometry"])
 
             if IS_TEST_ENV and ibge_code not in LAVRAS_REGION_IBGE_CODES:
+                continue
+
+            if ibge_code not in target_cities:
                 continue
 
             query = text("""
