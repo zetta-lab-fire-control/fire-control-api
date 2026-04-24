@@ -6,7 +6,7 @@
 | clients/postgres.py                    |       37 |        3 |     92% |
 | core/cache/service.py                  |       22 |        1 |     95% |
 | core/database/cruds/\_\_init\_\_.py    |        6 |        0 |    100% |
-| core/database/cruds/default.py         |       63 |        5 |     92% |
+| core/database/cruds/default.py         |       65 |        5 |     92% |
 | core/database/cruds/media.py           |        6 |        0 |    100% |
 | core/database/cruds/media\_report.py   |        6 |        0 |    100% |
 | core/database/cruds/occurrence.py      |       52 |        2 |     96% |
@@ -38,10 +38,10 @@
 | docs.py                                |       21 |        6 |     71% |
 | routes/\_\_init\_\_.py                 |       17 |        0 |    100% |
 | routes/auth.py                         |       68 |        0 |    100% |
-| routes/firefighter.py                  |       16 |        5 |     69% |
+| routes/firefighter.py                  |       14 |        5 |     64% |
 | routes/health.py                       |        8 |        0 |    100% |
 | routes/media.py                        |       27 |        0 |    100% |
-| routes/occurrence.py                   |       65 |        0 |    100% |
+| routes/occurrence.py                   |       66 |        0 |    100% |
 | routes/report.py                       |       66 |        0 |    100% |
 | routes/user.py                         |       41 |        0 |    100% |
-| **TOTAL**                              | **1190** |   **69** | **94%** |
+| **TOTAL**                              | **1191** |   **69** | **94%** |
