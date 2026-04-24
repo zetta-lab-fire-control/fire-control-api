@@ -18,6 +18,7 @@ A arquitetura do repositório foi pensada para separar claramente a infraestrutu
     * **[`schema`](docs/schema.md)**: contém o esquema do banco de dados relacional.
     * **[`tools`](docs/tools.yml)**: Resumo de todas as ferramentas utilizadas no projeto.
     * **[`usecases`](docs/usecases.md)**: Documenta os casos de uso principais baseados nas regras de negócio (requisitos)
+    * **[`routes`](docs/routes.md)**: Documenta as regras de autenticação das rotas.
     * **[`tasks`](docs/tasks.md)**: Documenta o passo-a-passo do desenvolvimento da aplicação.
 * **[`source/`](source/)**: Contém a codebase do projeto.
     * **[`api/`](source/api/)**: Código-fonte da API.

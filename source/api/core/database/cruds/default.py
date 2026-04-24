@@ -105,7 +105,8 @@ class CRUD[ModelType, CreateSchemaType: BaseModel, UpdateSchemaType: BaseModel]:
         query = db.query(self.model)
 
         for key, value in filters.items():
-            query = query.filter(getattr(self.model, key) == value)
+            if value is not None:
+                query = query.filter(getattr(self.model, key) == value)
 
         return query.offset(skip).limit(limit).all()
 
@@ -114,7 +115,8 @@ class CRUD[ModelType, CreateSchemaType: BaseModel, UpdateSchemaType: BaseModel]:
         query = db.query(self.model)
 
         for key, value in filters.items():
-            query = query.filter(getattr(self.model, key) == value)
+            if value is not None:
+                query = query.filter(getattr(self.model, key) == value)
 
         return query.count()
 
