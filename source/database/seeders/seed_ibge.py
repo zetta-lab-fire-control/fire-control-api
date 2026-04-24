@@ -72,7 +72,7 @@ def seed_mg_cities_data():
             if IS_TEST_ENV and ibge_code not in LAVRAS_REGION_IBGE_CODES:
                 continue
 
-            if ibge_code not in target_cities:
+            if ibge_code not in target_cities and not IS_TEST_ENV:
                 continue
 
             query = text("""
